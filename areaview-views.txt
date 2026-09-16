@@ -1,0 +1,351 @@
+Created At: 2026-06-27T08:26:32Z
+Completed At: 2026-06-27T08:26:32Z
+File Path: `file:///c:/Users/PC/Downloads/drivepasslatestdashboard20june/src/pages/AreaView.jsx`
+Total Lines: 206
+Total Bytes: 10183
+Showing lines 1 to 206
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1: import React, { useEffect, useState } from 'react';
+2: import { useParams, Navigate, Link } from 'react-router-dom';
+3: import { MdArrowBack } from 'react-icons/md';
+4: import { FiMapPin, FiPackage, FiClock, FiCalendar, FiBox } from 'react-icons/fi';
+5: import axios from '../services/axios';
+6: import { BranchService } from '../services/branch.service';
+7: 
+8: const AreaView = () => {
+9:   const { id } = useParams();
+10:   const [branch, setBranch] = useState(null);
+11:   const [loading, setLoading] = useState(true);
+12: 
+13:   const [packages, setPackages] = useState([]);
+14:   const [loadingPackages, setLoadingPackages] = useState(true);
+15: 
+16:   useEffect(() => {
+17:     const fetchPackages = async () => {
+18:       try {
+19:         const res = await axios.get(`/ds/package-masters/getbyarea/${id}`);
+20:         
+21:         let packagesArray = [];
+22:         if (Array.isArray(res)) {
+23:           packagesArray = res;
+24:         } else if (res && typeof res === 'object') {
+25:           if (Array.isArray(res.packages)) packagesArray = res.packages;
+26:           else if (Array.isArray(res.data)) packagesArray = res.data;
+27:           else if (Array.isArray(res.data?.packages)) packagesArray = res.data.packages;
+28:           else if (Array.isArray(res.data?.data)) packagesArray = res.data.data;
+29:           else {
+30:             const arrayVals = Object.values(res).filter(Array.isArray);
+31:             if (arrayVals.length > 0) packagesArray = arrayVals[0];
+32:           }
+33:         }
+34:         
+35:         setPackages(packagesArray);
+36:       } catch (error) {
+37:         setPackages([]);
+38:       } finally {
+39:         setLoadingPackages(false);
+40:       }
+41:     };
+42:     fetchPackages();
+43:   }, [id]);
+44: 
+45:   useEffect(() => {
+46:     const fetchBranch = async () => {
+47:       try {
+48:         const res = await BranchService.getOne(id);
+49:         const data = res.data?.branch || res.branch || res.data || res;
+50:         setBranch(data);
+51:       } catch (error) {
+52:         setBranch(null);
+53:       } finally {
+54:         setLoading(false);
+55:       }
+56:     };
+57:     fetchBranch();
+58:   }, [id]);
+59: 
+60:   if (!loading && !branch) {
+61:     return <Navigate to="/areas" replace />;
+62:   }
+63: 
+64:   if (loading) {
+65:     return (
+66:       <div className="flex justify-center items-center h-[70vh]">
+67:         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
+68:       </div>
+69:     );
+70:   }
+71: 
+72:   return (
+73:     <div className="p-6 md:p-10 max-w-7xl mx-auto min-h-screen font-sans text-slate-900 dark:text-slate-100">
+74:       
+75:       {/* Navigation */}
+76:       <div className="mb-6">
+77:         <Link 
+78:           to="/areas"
+79:           className="inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 transition-colors"
+80:         >
+81:           <MdArrowBack className="text-lg" />
+82:           Back to Areas
+83:         </Link>
+84:       </div>
+85: 
+86:       {/* Hero Header Card */}
+87:       <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm mb-10">
+88:         <div className="p-6 md:p-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+89:           <div className="flex items-center gap-5">
+90:             {/* Minimalist Avatar */}
+91:             <div className="flex-shrink-0 w-16 h-16 rounded-lg bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-100 dark:border-indigo-500/20 flex items-center justify-center text-indigo-600 dark:text-indigo-400 text-2xl font-bold uppercase shadow-sm">
+92:               {branch.name?.charAt(0) || <FiMapPin />}
+93:             </div>
+94:             
+95:             <div className="space-y-1.5">
+96:               <div className="flex items-center gap-3">
+97:                 <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white capitalize">
+98:                   {branch.name}
+99:                 </h1>
+100:                 <span className={`px-2.5 py-0.5 rounded-md text-[11px] font-semibold uppercase tracking-wider border ${
+101:                   branch.status === 'Active' 
+102:                     ? 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20' 
+103:                     : 'bg-slate-100 text-slate-600 border-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700'
+104:                 }`}>
+105:                   {branch.status}
+106:                 </span>
+107:               </div>
+108:               
+109:               <div className="flex items-center gap-3 flex-wrap text-sm text-slate-500 dark:text-slate-400">
+110:                 <div className="flex items-center gap-1.5 bg-slate-50 dark:bg-slate-800/50 px-2.5 py-1 rounded-md border border-slate-200 dark:border-slate-700/50 font-mono text-[12px]">
+111:                   <span className="text-slate-400 dark:text-slate-500">CODE:</span>
+112:                   <span className="font-semibold text-slate-700 dark:text-slate-300">{branch.code}</span>
+113:                 </div>
+114:                 {branch.postcode && (
+115:                   <div className="flex items-center gap-1.5 bg-slate-50 dark:bg-slate-800/50 px-2.5 py-1 rounded-md border border-slate-200 dark:border-slate-700/50 font-mono text-[12px]">
+116:                     <FiMapPin className="text-slate-400" />
+117:                     <span className="font-semibold text-slate-700 dark:text-slate-300">{branch.postcode}</span>
+118:                   </div>
+119:                 )}
+120:               </div>
+121:             </div>
+122:           </div>
+123: 
+124:           {/* Right-side Meta Info */}
+125:           <div className="flex flex-row md:flex-col gap-4 md:gap-1.5 text-xs text-slate-500 dark:text-slate-400">
+126:             <div className="flex items-center gap-2">
+127:               <FiCalendar className="text-slate-400" />
+128:               <span>Created <span className="font-medium text-slate-700 dark:text-slate-300">{new Date(branch.createdAt).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: '2-digit' })}</span></span>
+129:             </div>
+130:             <div className="flex items-center gap-2">
+131:               <FiClock className="text-slate-400" />
+132:               <span>Updated <span className="font-medium text-slate-700 dark:text-slate-300">{new Date(branch.updatedAt).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: '2-digit' })}</span></span>
+133:             </div>
+134:           </div>
+135:         </div>
+136:       </div>
+137: 
+138:       {/* Packages Section */}
+139:       <div>
+140:         <div className="flex items-center justify-between mb-6 border-b border-slate-200 dark:border-slate-800 pb-4">
+141:           <div className="flex items-center gap-2.5">
+142:             <FiBox className="text-xl text-slate-400 dark:text-slate-500" />
+143:             <h3 className="text-lg font-semibold text-slate-900 dark:text-white">Associated Packages</h3>
+144:           </div>
+145:           <span className="bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 text-xs font-semibold px-2.5 py-1 rounded-full border border-slate-200 dark:border-slate-700">
+146:             {packages.length} {packages.length === 1 ? 'Package' : 'Packages'}
+147:           </span>
+148:         </div>
+149: 
+150:         {(() => {
+151:           if (loadingPackages) {
+152:             return (
+153:               <div className="flex justify-center items-center h-24 border border-dashed border-slate-200 dark:border-slate-800 rounded-xl">
+154:                 <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-indigo-600"></div>
+155:               </div>
+156:             );
+157:           }
+158:           
+159:           if (packages && packages.length > 0) {
+160:             return (
+161:               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+162:                 {packages.map((pkg, idx) => (
+163:                   <div key={pkg._id || idx} className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 hover:border-indigo-300 dark:hover:border-indigo-500/50 hover:shadow-sm transition-all duration-200 group flex flex-col justify-between">
+164:                     <div>
+165:                       <div className="flex justify-between items-start mb-4">
+166:                         <div className="w-10 h-10 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 flex items-center justify-center text-slate-500 dark:text-slate-400 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 group-hover:bg-indigo-50 dark:group-hover:bg-indigo-500/10 transition-colors">
+167:                           <FiPackage className="text-lg" />
+168:                         </div>
+169:                         <span className="px-2.5 py-1 bg-slate-50 dark:bg-slate-800 rounded-md text-[10px] font-bold tracking-wider uppercase text-slate-500 dark:text-slate-400 border border-slate-100 dark:border-slate-700">
+170:                           {pkg.package_slug || 'N/A'}
+171:                         </span>
+172:                       </div>
+173:                       
+174:                       <h4 className="text-base font-semibold text-slate-900 dark:text-white mb-1 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+175:                         {pkg.package_name}
+176:                       </h4>
+177:                     </div>
+178:                     
+179:                     <div className="mt-4 pt-4 border-t border-slate-100 dark:border-slate-800/50 flex items-center text-sm text-slate-500 dark:text-slate-400 font-medium">
+180:                       <FiClock className="mr-2 text-slate-400" />
+181:                       {pkg.duration} Hours Duration
+182:                     </div>
+183:                   </div>
+184:                 ))}
+185:               </div>
+186:             );
+187:           }
+188: 
+189:           return (
+190:             <div className="bg-slate-50 dark:bg-slate-900 border border-dashed border-slate-200 dark:border-slate-800 rounded-xl p-8 text-center flex flex-col items-center justify-center">
+191:               <div className="w-12 h-12 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-400 mb-3 shadow-sm">
+192:                 <FiBox className="text-xl" />
+193:               </div>
+194:               <h4 className="text-sm font-semibold text-slate-900 dark:text-white mb-1">No Packages</h4>
+195:               <p className="text-sm text-slate-500 dark:text-slate-400 max-w-sm">This area doesn&apos;t have any associated packages yet.</p>
+196:             </div>
+197:           );
+198:         })()}
+199:       </div>
+200: 
+201:     </div>
+202:   );
+203: };
+204: 
+205: export default AreaView;
+206: 
+The above content shows the entire, complete file contents of the requested file.
+
+
+-------
+
+Created At: 2026-06-27T08:35:43Z
+Completed At: 2026-06-27T08:35:43Z
+File Path: `file:///c:/Users/PC/Downloads/drivepasslatestdashboard20june/src/pages/AreaView.jsx`
+Total Lines: 206
+Total Bytes: 10183
+Showing lines 1 to 30
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1: import React, { useEffect, useState } from 'react';
+2: import { useParams, Navigate, Link } from 'react-router-dom';
+3: import { MdArrowBack } from 'react-icons/md';
+4: import { FiMapPin, FiPackage, FiClock, FiCalendar, FiBox } from 'react-icons/fi';
+5: import axios from '../services/axios';
+6: import { BranchService } from '../services/branch.service';
+7: 
+8: const AreaView = () => {
+9:   const { id } = useParams();
+10:   const [branch, setBranch] = useState(null);
+11:   const [loading, setLoading] = useState(true);
+12: 
+13:   const [packages, setPackages] = useState([]);
+14:   const [loadingPackages, setLoadingPackages] = useState(true);
+15: 
+16:   useEffect(() => {
+17:     const fetchPackages = async () => {
+18:       try {
+19:         const res = await axios.get(`/ds/package-masters/getbyarea/${id}`);
+20:         
+21:         let packagesArray = [];
+22:         if (Array.isArray(res)) {
+23:           packagesArray = res;
+24:         } else if (res && typeof res === 'object') {
+25:           if (Array.isArray(res.packages)) packagesArray = res.packages;
+26:           else if (Array.isArray(res.data)) packagesArray = res.data;
+27:           else if (Array.isArray(res.data?.packages)) packagesArray = res.data.packages;
+28:           else if (Array.isArray(res.data?.data)) packagesArray = res.data.data;
+29:           else {
+30:             const arrayVals = Object.values(res).filter(Array.isArray);
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.
+
+
+-------
+
+Created At: 2026-06-27T08:35:48Z
+Completed At: 2026-06-27T08:35:48Z
+File Path: `file:///c:/Users/PC/Downloads/drivepasslatestdashboard20june/src/pages/AreaView.jsx`
+Total Lines: 206
+Total Bytes: 10183
+Showing lines 180 to 206
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+180:                       <FiClock className="mr-2 text-slate-400" />
+181:                       {pkg.duration} Hours Duration
+182:                     </div>
+183:                   </div>
+184:                 ))}
+185:               </div>
+186:             );
+187:           }
+188: 
+189:           return (
+190:             <div className="bg-slate-50 dark:bg-slate-900 border border-dashed border-slate-200 dark:border-slate-800 rounded-xl p-8 text-center flex flex-col items-center justify-center">
+191:               <div className="w-12 h-12 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-400 mb-3 shadow-sm">
+192:                 <FiBox className="text-xl" />
+193:               </div>
+194:               <h4 className="text-sm font-semibold text-slate-900 dark:text-white mb-1">No Packages</h4>
+195:               <p className="text-sm text-slate-500 dark:text-slate-400 max-w-sm">This area doesn&apos;t have any associated packages yet.</p>
+196:             </div>
+197:           );
+198:         })()}
+199:       </div>
+200: 
+201:     </div>
+202:   );
+203: };
+204: 
+205: export default AreaView;
+206: 
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.
+
+
+-------
+
+Created At: 2026-06-27T09:10:09Z
+Completed At: 2026-06-27T09:10:09Z
+File Path: `file:///c:/Users/PC/Downloads/drivepasslatestdashboard20june/src/pages/AreaView.jsx`
+Total Lines: 131
+Total Bytes: 4018
+Showing lines 1 to 40
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1: import React, { useEffect, useState } from 'react';
+2: import { useParams, Navigate } from 'react-router-dom';
+3: import { MdEmail, MdPhone, MdLocationOn } from 'react-icons/md';
+4: import axios from '../services/axios';
+5: 
+6: const AreaView = () => {
+7:   const { id } = useParams();
+8: 
+9:   const [branch, setBranch] = useState(null);
+10:   const [loading, setLoading] = useState(true);
+11: 
+12:   /* 🔹 Fetch single branch */
+13:   useEffect(() => {
+14:     const fetchBranch = async () => {
+15:       try {
+16:         const res = await axios.get(`/branchs/${id}`);
+17:         setBranch(res.branch);
+18:       } catch (error) {
+19:         setBranch(null);
+20:       } finally {
+21:         setLoading(false);
+22:       }
+23:     };
+24: 
+25:     fetchBranch();
+26:   }, [id]);
+27: 
+28:   if (!loading && !branch) {
+29:     return <Navigate to="/areas" replace />;
+30:   }
+31: 
+32:   if (loading) {
+33:     return <div className="p-6 text-center">Loading...</div>;
+34:   }
+35: 
+36:   const mapSrc = `https://www.google.com/maps?q=${encodeURIComponent(
+37:     branch.address
+38:   )}&output=embed`;
+39: 
+40:   return (
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.
+
+
+-------
+

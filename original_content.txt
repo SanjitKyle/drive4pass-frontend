@@ -1,0 +1,162 @@
+Created At: 2026-07-17T12:17:13Z
+Completed At: 2026-07-17T12:17:13Z
+File Path: `file:///d:/sanjit/drivepasslatestdashboard20june/src/pages/EnquiryProfilePage.jsx`
+Total Lines: 154
+Total Bytes: 4992
+Showing lines 1 to 154
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1: import React from 'react';
+2: import { useParams, Navigate } from 'react-router-dom';
+3: import { enquiriesData } from '../data/dummy';
+4: 
+5: const EnquiryProfilePage = () => {
+6:   const { id } = useParams();
+7: 
+8:   const enquiry = enquiriesData.find(
+9:     (e) => e.EnquiryID === Number(id)
+10:   );
+11: 
+12:   // 🔒 Safety check
+13:   if (!enquiry) {
+14:     return <Navigate to="/enquiries" replace />;
+15:   }
+16: 
+17:   return (
+18:     <div className="p-6 max-w-6xl mx-auto space-y-6">
+19: 
+20:       {/* BACK */}
+21:       <button
+22:         type="button"
+23:         onClick={() => window.history.back()}
+24:         className="text-sm text-gray-600 hover:underline"
+25:       >
+26:         ← Back to Enquiries
+27:       </button>
+28: 
+29:       {/* HEADER */}
+30:       <div className="bg-white dark:bg-secondary-dark-bg rounded-xl p-6 shadow flex justify-between items-center">
+31:         <div>
+32:           <h1 className="text-2xl font-bold">
+33:             {enquiry.FullName}
+34:           </h1>
+35:           <p className="text-sm text-gray-500">
+36:             Enquiry #{enquiry.EnquiryID} · {enquiry.CreatedAt}
+37:           </p>
+38:           <p className="text-sm text-gray-600">
+39:             {enquiry.Phone} · {enquiry.Email}
+40:           </p>
+41:         </div>
+42: 
+43:         <StatusBadge status={enquiry.EnquiryStatus} />
+44:       </div>
+45: 
+46:       {/* MAIN GRID */}
+47:       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+48: 
+49:         {/* LEFT */}
+50:         <div className="lg:col-span-2 space-y-6">
+51: 
+52:           {/* BASIC INFO */}
+53:           <Card title="Enquiry Details">
+54:             <Info label="Area" value={enquiry.Area} />
+55:             <Info label="Postcode" value={enquiry.Postcode} />
+56:             <Info label="Lesson Type" value={enquiry.LessonType} />
+57:             <Info label="Preferred Transmission" value={enquiry.Transmission} />
+58:             <Info label="Preferred Time" value={enquiry.PreferredTime} />
+59:             <Info label="Start Timeline" value={enquiry.StartTimeline} />
+60:           </Card>
+61: 
+62:           {/* PACKAGE */}
+63:           <Card title="Interested Package">
+64:             <Info label="Package" value={enquiry.InterestedPackage} />
+65:             <Info label="Estimated Price" value={enquiry.EstimatedPrice} />
+66:             <Info label="Zone" value={enquiry.Zone} />
+67:           </Card>
+68: 
+69:           {/* NOTES */}
+70:           <Card title="Notes">
+71:             <p className="text-sm text-gray-700 whitespace-pre-line">
+72:               {enquiry.Notes || 'No notes added yet.'}
+73:             </p>
+74:           </Card>
+75: 
+76:         </div>
+77: 
+78:         {/* RIGHT */}
+79:         <div className="space-y-6">
+80: 
+81:           {/* STATUS */}
+82:           <Card title="Lead Status">
+83:             <Info label="Status" value={enquiry.EnquiryStatus} />
+84:             <Info label="Priority" value={enquiry.Priority} />
+85:             <Info label="Source" value={enquiry.Source} />
+86:             <Info label="Assigned To" value={enquiry.AssignedTo} />
+87:           </Card>
+88: 
+89:           {/* FOLLOW UP */}
+90:           <Card title="Follow-up">
+91:             <Info label="Follow-up Date" value={enquiry.FollowUpDate} />
+92:             <Info label="Last Contacted" value={enquiry.LastContactedAt} />
+93:           </Card>
+94: 
+95:           {/* ACTIONS */}
+96:           <div className="bg-white dark:bg-secondary-dark-bg rounded-xl p-6 shadow space-y-3">
+97:             <h3 className="font-semibold">Quick Actions</h3>
+98: 
+99:             <button type='button' className="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition">
+100:               Convert to Learner
+101:             </button>
+102: 
+103:             <button type='button' className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition">
+104:               Schedule Trial Lesson
+105:             </button>
+106: 
+107:             <button type='button' className="w-full bg-gray-100 text-gray-700 py-2 rounded-lg hover:bg-gray-200 transition">
+108:               Add Follow-up Note
+109:             </button>
+110:           </div>
+111: 
+112:         </div>
+113:       </div>
+114:     </div>
+115:   );
+116: };
+117: 
+118: export default EnquiryProfilePage;
+119: 
+120: /* ================= SMALL COMPONENTS ================= */
+121: 
+122: const Card = ({ title, children }) => (
+123:   <div className="bg-white dark:bg-secondary-dark-bg rounded-xl p-6 shadow space-y-4">
+124:     <h3 className="font-semibold">{title}</h3>
+125:     <div className="space-y-2">{children}</div>
+126:   </div>
+127: );
+128: 
+129: const Info = ({ label, value }) => (
+130:   <div className="flex justify-between text-sm">
+131:     <span className="text-gray-500">{label}</span>
+132:     <span className="font-medium text-right">{value}</span>
+133:   </div>
+134: );
+135: 
+136: const StatusBadge = ({ status }) => {
+137:   const styles = {
+138:     New: 'bg-blue-100 text-blue-700',
+139:     Contacted: 'bg-indigo-100 text-indigo-700',
+140:     'Follow-up': 'bg-yellow-100 text-yellow-700',
+141:     Converted: 'bg-green-100 text-green-700',
+142:     Lost: 'bg-red-100 text-red-700',
+143:     'Not Interested': 'bg-gray-100 text-gray-600',
+144:   };
+145: 
+146:   return (
+147:     <span
+148:       className={`px-4 py-1 rounded-full text-sm font-medium ${styles[status]}`}
+149:     >
+150:       {status}
+151:     </span>
+152:   );
+153: };
+154: 
+The above content shows the entire, complete file contents of the requested file.

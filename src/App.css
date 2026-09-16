@@ -1,0 +1,132 @@
+/* Theme is handled dynamically in App.js */
+
+.sidebar {
+  box-shadow: rgb(113 122 131 / 11%) 0px 7px 30px 0px;
+}
+.nav-item,
+.navbar {
+  z-index: 10000;
+}
+@media  screen and (max-width:800px) {
+  .sidebar{
+    z-index: 10000000;
+  }
+}
+
+.e-dlg-center-center, .e-quick-popup-wrapper.e-device{
+  z-index: 1000000 !important;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-thumb {
+  background-color: rgb(216, 216, 216);
+  border-radius: 40px;
+}
+::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+/* color-picker style  */
+
+ #preview {
+  background: transparent
+    url('https://ej2.syncfusion.com/react/demos/src/color-picker/images/pen.png')
+    no-repeat;
+  display: inline-block;
+  height: 80px;
+  margin: 10px 0;
+  min-width: 300px;
+  max-width: 600px;
+  background-color: #008000;
+}
+
+.e-input-group:not(.e-float-icon-left), .e-input-group.e-success:not(.e-float-icon-left), .e-input-group.e-warning:not(.e-float-icon-left), .e-input-group.e-error:not(.e-float-icon-left), .e-input-group.e-control-wrapper:not(.e-float-icon-left), .e-input-group.e-control-wrapper.e-success:not(.e-float-icon-left), .e-input-group.e-control-wrapper.e-warning:not(.e-float-icon-left), .e-input-group.e-control-wrapper.e-error:not(.e-float-icon-left){
+  border: none;
+}
+
+.event-editor-card {
+  padding: 20px;
+  font-family: 'Inter', sans-serif;
+}
+
+.editor-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  color: #222;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 14px;
+}
+
+.field label {
+  font-size: 13px;
+  font-weight: 500;
+  color: #555;
+  margin-bottom: 6px;
+}
+
+.input {
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  font-size: 14px;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.input:focus {
+  border-color: #e91e63;
+  box-shadow: 0 0 0 2px rgba(233, 30, 99, 0.15);
+}
+
+.time-box {
+  display: flex;
+  justify-content: space-between;
+  background: #f9fafb;
+  padding: 12px 14px;
+  border-radius: 10px;
+  margin-top: 10px;
+}
+
+.time-label {
+  display: block;
+  font-size: 12px;
+  color: #888;
+}
+
+.time-value {
+  font-size: 14px;
+  font-weight: 500;
+  color: #222;
+}
+
+/* Dark mode overrides for event editor popup */
+.dark .event-editor-card {
+  color: #fff;
+}
+.dark .editor-title {
+  color: #f1f5f9;
+}
+.dark .field label {
+  color: #94a3b8;
+}
+.dark .input {
+  background: #1e293b;
+  border-color: #475569;
+  color: #f1f5f9;
+}
+.dark .time-box {
+  background: #1e293b;
+}
+.dark .time-label {
+  color: #94a3b8;
+}
+.dark .time-value {
+  color: #f1f5f9;
+}

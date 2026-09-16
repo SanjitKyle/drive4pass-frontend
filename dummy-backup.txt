@@ -1,0 +1,89 @@
+Created At: 2026-06-27T08:30:03Z
+Completed At: 2026-06-27T08:30:03Z
+File Path: `file:///c:/Users/PC/Downloads/drivepasslatestdashboard20june/src/data/dummy.js`
+Total Lines: 7461
+Total Bytes: 163101
+Showing lines 1170 to 1250
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1170:   },
+1171: ];
+1172: 
+1173: export const links = [
+1174:   {
+1175:     title: 'Diary',
+1176:     links: [
+1177:       {
+1178:         name: 'diary',
+1179:         icon: <FiBookOpen />,
+1180:       },
+1181:     ],
+1182:   },
+1183: 
+1184:   {
+1185:     title: 'Pages',
+1186:     links: [
+1187:       {
+1188:         name: 'instructors',
+1189:         icon: <IoMdContacts />,
+1190:       },
+1191:       {
+1192:         name: 'pupil',
+1193:         icon: <RiContactsLine />,
+1194:       },
+1195:       // {
+1196:       //   name: 'lessons',
+1197:       //   icon: <FiBookOpen />,
+1198:       // },
+1199:       {
+1200:         name: 'transfers',
+1201:         icon: <FiPackage />,
+1202:       },
+1203:       {
+1204:         name: 'enquiries',
+1205:         icon: <AiOutlineQuestionCircle />,
+1206:       },
+1207:     ],
+1208:   },
+1209: 
+1210:   {
+1211:     title: 'Settings',
+1212:     links: [
+1213:       {
+1214:         name: 'areas',
+1215:         icon: <FiMapPin />,
+1216:       },
+1217:       {
+1218:         name: 'packages',
+1219:         icon: <FiPackage />,
+1220:       },
+1221:       {
+1222:         name: 'pricing',
+1223:         icon: <FiDollarSign />,
+1224:       },
+1225:     ],
+1226:   },
+1227: ];
+1228: 
+1229: export const cartData = [
+1230:   {
+1231:     image:
+1232:       product5,
+1233:     name: 'butterscotch ice-cream',
+1234:     category: 'Milk product',
+1235:     price: '$250',
+1236:   },
+1237:   {
+1238:     image:
+1239:       product6,
+1240:     name: 'Supreme fresh tomato',
+1241:     category: 'Vegetable Item',
+1242:     price: '$450',
+1243:   },
+1244:   {
+1245:     image:
+1246:       product7,
+1247:     name: 'Red color candy',
+1248:     category: 'Food Item',
+1249:     price: '$190',
+1250:   },
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

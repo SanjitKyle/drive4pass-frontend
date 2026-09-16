@@ -1,0 +1,582 @@
+[
+  {
+    "step": 19,
+    "tc": {
+      "name": "view_file",
+      "args": {
+        "AbsolutePath": "d:\\sanjit\\drivepasslatestdashboard20june\\src\\pages\\EnquiryProfilePage.jsx",
+        "toolAction": "Viewing EnquiryProfilePage.jsx",
+        "toolSummary": "View EnquiryProfilePage.jsx"
+      }
+    }
+  },
+  {
+    "step": 22,
+    "tc": {
+      "name": "view_file",
+      "args": {
+        "AbsolutePath": "d:\\sanjit\\drivepasslatestdashboard20june\\src\\pages\\FranchiseEnquiryProfilePage.jsx",
+        "toolAction": "Viewing FranchiseEnquiryProfilePage.jsx",
+        "toolSummary": "View FranchiseEnquiryProfilePage.jsx"
+      }
+    }
+  },
+  {
+    "step": 25,
+    "tc": {
+      "name": "view_file",
+      "args": {
+        "AbsolutePath": "d:\\sanjit\\drivepasslatestdashboard20june\\src\\pages\\EnquiryProfilePage.jsx",
+        "toolAction": "Viewing EnquiryProfilePage.jsx",
+        "toolSummary": "View EnquiryProfilePage.jsx"
+      }
+    }
+  },
+  {
+    "step": 28,
+    "tc": {
+      "name": "multi_replace_file_content",
+      "args": {
+        "Description": "Fixed the EnquiryProfilePage so it correctly gets the enquiry data from `location.state` or ContextProvider (since it's a real API call). Mapped real database field names to the ones the component expects. Added a fallback style to the `StatusBadge` in case the backend returns a status that isn't mapped explicitly.",
+        "Instruction": "Modify `EnquiryProfilePage.jsx` to load real enquiry data instead of only dummy data. Update the properties accessed to support dynamic API properties. Add fallback status color.",
+        "ReplacementChunks": [
+          {
+            "AllowMultiple": false,
+            "EndLine": 15,
+            "ReplacementContent": "import React from 'react';\nimport { useParams, Navigate, useLocation } from 'react-router-dom';\nimport { enquiriesData } from '../data/dummy';\nimport { useStateContext } from '../contexts/ContextProvider';\n\nconst EnquiryProfilePage = () => {\n  const { id } = useParams();\n  const location = useLocation();\n  const { allenquies } = useStateContext();\n\n  const contextEnq = allenquies?.find((e) => e._id === id || e.id === id || e.EnquiryID === Number(id));\n\n  const rawEnquiry =\n    location.state?.enquiry ||\n    contextEnq ||\n    enquiriesData.find((e) => e.EnquiryID === Number(id));\n\n  // 🔒 Safety check\n  if (!rawEnquiry) {\n    return <Navigate to=\"/enquiries\" replace />;\n  }\n\n  const getDynamicName = (obj) => {\n    if (!obj) return null;\n    const nameKey = Object.keys(obj).find(key => \n      key.toLowerCase().includes('name') && \n      typeof obj[key] === 'string' && \n      obj[key].trim() !== ''\n    );\n    return nameKey ? obj[nameKey] : null;\n  };\n\n  const enquiry = {\n    FullName: rawEnquiry.FullName || rawEnquiry.Name || rawEnquiry.name || rawEnquiry.full_name || (rawEnquiry.first_name ? `${rawEnquiry.first_name} ${rawEnquiry.last_name || ''}`.trim() : null) || getDynamicName(rawEnquiry) || '—',\n    EnquiryID: rawEnquiry.EnquiryID || rawEnquiry.id || rawEnquiry._id || '—',\n    CreatedAt: rawEnquiry.CreatedAt || (rawEnquiry.createdAt ? new Date(rawEnquiry.createdAt).toLocaleDateString('en-GB') : '') || '—',\n    Phone: rawEnquiry.Phone || rawEnquiry.phone || rawEnquiry.mobile || '—',\n    Email: rawEnquiry.Email || rawEnquiry.email || '—',\n    EnquiryStatus: rawEnquiry.EnquiryStatus || rawEnquiry.status || '—',\n    Area: rawEnquiry.Area || rawEnquiry.area || rawEnquiry.service_provided_area || '—',\n    Postcode: rawEnquiry.Postcode || rawEnquiry.postcode || '—',\n    LessonType: rawEnquiry.LessonType || rawEnquiry.lesson_type || rawEnquiry.type_of_training || '—',\n    Transmission: rawEnquiry.Transmission || rawEnquiry.transmission || rawEnquiry.preferred_transmission || '—',\n    PreferredTime: rawEnquiry.PreferredTime || rawEnquiry.preferred_time || rawEnquiry.lesson_preference_time || '—',\n    StartTimeline: rawEnquiry.StartTimeline || rawEnquiry.start_timeline || (rawEnquiry.preferred_start_date ? new Date(rawEnquiry.preferred_start_date).toLocaleDateString('en-GB') : '') || '—',\n    InterestedPackage: rawEnquiry.InterestedPackage || rawEnquiry.interested_package || rawEnquiry.package_name || rawEnquiry.package_id?.package_name || '—',\n    EstimatedPrice: rawEnquiry.EstimatedPrice || (rawEnquiry.estimated_price !== undefined ? `£${rawEnquiry.estimated_price}` : '') || (rawEnquiry.price !== undefined ? `£${rawEnquiry.price}` : '') || '—',\n    Zone: rawEnquiry.Zone || rawEnquiry.zone || '—',\n    Notes: rawEnquiry.Notes || rawEnquiry.notes || rawEnquiry.additional_message || '—',\n    Priority: rawEnquiry.Priority || rawEnquiry.priority || '—',\n    Source: rawEnquiry.Source || rawEnquiry.source || '—',\n    AssignedTo: rawEnquiry.AssignedTo || rawEnquiry.assigned_to || rawEnquiry.instructor_id?.name || '—',\n    FollowUpDate: rawEnquiry.FollowUpDate || (rawEnquiry.follow_up_date ? new Date(rawEnquiry.follow_up_date).toLocaleDateString('en-GB') : '') || '—',\n    LastContactedAt: rawEnquiry.LastContactedAt || (rawEnquiry.last_contacted_at ? new Date(rawEnquiry.last_contacted_at).toLocaleDateString('en-GB') : '') || '—',\n  };",
+            "StartLine": 1,
+            "TargetContent": "import React from 'react';\nimport { useParams, Navigate } from 'react-router-dom';\nimport { enquiriesData } from '../data/dummy';\n\nconst EnquiryProfilePage = () => {\n  const { id } = useParams();\n\n  const enquiry = enquiriesData.find(\n    (e) => e.EnquiryID === Number(id)\n  );\n\n  // 🔒 Safety check\n  if (!enquiry) {\n    return <Navigate to=\"/enquiries\" replace />;\n  }"
+          },
+          {
+            "AllowMultiple": false,
+            "EndLine": 151,
+            "ReplacementContent": "  return (\n    <span\n      className={`px-4 py-1 rounded-full text-sm font-medium ${styles[status] || 'bg-gray-100 text-gray-600'}`}\n    >\n      {status}\n    </span>\n  );",
+            "StartLine": 146,
+            "TargetContent": "  return (\n    <span\n      className={`px-4 py-1 rounded-full text-sm font-medium ${styles[status]}`}\n    >\n      {status}\n    </span>\n  );"
+          }
+        ],
+        "TargetFile": "d:\\sanjit\\drivepasslatestdashboard20june\\src\\pages\\EnquiryProfilePage.jsx",
+        "toolAction": "Fixing EnquiryProfilePage.jsx",
+        "toolSummary": "Fix EnquiryProfilePage"
+      }
+    }
+  },
+  {
+    "step": 49,
+    "tc": {
+      "name": "view_file",
+      "args": {
+        "AbsolutePath": "d:\\sanjit\\drivepasslatestdashboard20june\\src\\pages\\EnquiryProfilePage.jsx",
+        "toolAction": "Viewing EnquiryProfilePage.jsx",
+        "toolSummary": "View EnquiryProfilePage.jsx"
+      }
+    }
+  },
+  {
+    "step": 57,
+    "tc": {
+      "name": "run_command",
+      "args": {
+        "CommandLine": "npx eslint src/pages/EnquiryProfilePage.jsx",
+        "Cwd": "d:\\sanjit\\drivepasslatestdashboard20june",
+        "WaitMsBeforeAsync": 2000,
+        "toolAction": "Running eslint on EnquiryProfilePage.jsx",
+        "toolSummary": "Run eslint on EnquiryProfilePage"
+      }
+    }
+  },
+  {
+    "step": 79,
+    "tc": {
+      "name": "view_file",
+      "args": {
+        "AbsolutePath": "d:\\sanjit\\drivepasslatestdashboard20june\\src\\pages\\EnquiryProfilePage.jsx",
+        "toolAction": "Viewing EnquiryProfilePage.jsx",
+        "toolSummary": "View EnquiryProfilePage"
+      }
+    }
+  },
+  {
+    "step": 88,
+    "tc": {
+      "name": "replace_file_content",
+      "args": {
+        "AllowMultiple": false,
+        "Description": "Refactored EnquiryProfilePage.jsx to be completely crash-proof. Replaced the auto-redirect with an error message so we can see if data is missing. Added `safeString` to prevent React from crashing if the backend passes objects in fields like `Notes` or `AssignedTo`.",
+        "EndLine": 154,
+        "Instruction": "Completely replace the main EnquiryProfilePage component (up to the small components) with a robust version that handles missing data gracefully and guarantees no object-as-child render crashes.",
+        "ReplacementContent": "import React from 'react';\nimport { useParams, Navigate, useLocation } from 'react-router-dom';\nimport { enquiriesData } from '../data/dummy';\nimport { useStateContext } from '../contexts/ContextProvider';\n\nconst safeString = (val) => {\n  if (val === null || val === undefined) return '—';\n  if (typeof val === 'object') {\n    return val.name || val.title || val.full_name || val.first_name || JSON.stringify(val);\n  }\n  return String(val);\n};\n\nconst EnquiryProfilePage = () => {\n  const { id } = useParams();\n  const location = useLocation();\n  const { allenquies } = useStateContext();\n\n  const contextEnq = allenquies?.find((e) => e._id === id || e.id === id || e.EnquiryID === Number(id));\n\n  const rawEnquiry =\n    location.state?.enquiry ||\n    contextEnq ||\n    enquiriesData.find((e) => e.EnquiryID === Number(id));\n\n  if (!rawEnquiry) {\n    return (\n      <div className=\"p-6 max-w-6xl mx-auto space-y-6 flex flex-col items-center justify-center min-h-screen\">\n        <h2 className=\"text-xl font-bold\">Enquiry not found</h2>\n        <p>Could not load data for ID: {id}</p>\n        <button onClick={() => window.history.back()} className=\"px-4 py-2 bg-blue-500 text-white rounded\">Go Back</button>\n      </div>\n    );\n  }\n\n  const getDynamicName = (obj) => {\n    if (!obj) return null;\n    const nameKey = Object.keys(obj).find(key => \n      key.toLowerCase().includes('name') && \n      typeof obj[key] === 'string' && \n      obj[key].trim() !== ''\n    );\n    return nameKey ? obj[nameKey] : null;\n  };\n\n  const enquiry = {\n    FullName: safeString(rawEnquiry.FullName || rawEnquiry.Name || rawEnquiry.name || rawEnquiry.full_name || (rawEnquiry.first_name ? `${rawEnquiry.first_name} ${rawEnquiry.last_name || ''}`.trim() : null) || getDynamicName(rawEnquiry)),\n    EnquiryID: safeString(rawEnquiry.EnquiryID || rawEnquiry.id || rawEnquiry._id),\n    CreatedAt: safeString(rawEnquiry.CreatedAt || (rawEnquiry.createdAt ? new Date(rawEnquiry.createdAt).toLocaleDateString('en-GB') : '')),\n    Phone: safeString(rawEnquiry.Phone || rawEnquiry.phone || rawEnquiry.mobile),\n    Email: safeString(rawEnquiry.Email || rawEnquiry.email),\n    EnquiryStatus: safeString(rawEnquiry.EnquiryStatus || rawEnquiry.status),\n    Area: safeString(rawEnquiry.Area || rawEnquiry.area || rawEnquiry.service_provided_area),\n    Postcode: safeString(rawEnquiry.Postcode || rawEnquiry.postcode),\n    LessonType: safeString(rawEnquiry.LessonType || rawEnquiry.lesson_type || rawEnquiry.type_of_training),\n    Transmission: safeString(rawEnquiry.Transmission || rawEnquiry.transmission || rawEnquiry.preferred_transmission),\n    PreferredTime: safeString(rawEnquiry.PreferredTime || rawEnquiry.preferred_time || rawEnquiry.lesson_preference_time),\n    StartTimeline: safeString(rawEnquiry.StartTimeline || rawEnquiry.start_timeline || (rawEnquiry.preferred_start_date ? new Date(rawEnquiry.preferred_start_date).toLocaleDateString('en-GB') : '')),\n    InterestedPackage: safeString(rawEnquiry.InterestedPackage || rawEnquiry.interested_package || rawEnquiry.package_name || rawEnquiry.package_id?.package_name),\n    EstimatedPrice: safeString(rawEnquiry.EstimatedPrice || (rawEnquiry.estimated_price !== undefined ? `£${rawEnquiry.estimated_price}` : '') || (rawEnquiry.price !== undefined ? `£${rawEnquiry.price}` : '')),\n    Zone: safeString(rawEnquiry.Zone || rawEnquiry.zone),\n    Notes: safeString(rawEnquiry.Notes || rawEnquiry.notes || rawEnquiry.additional_message),\n    Priority: safeString(rawEnquiry.Priority || rawEnquiry.priority),\n    Source: safeString(rawEnquiry.Source || rawEnquiry.source),\n    AssignedTo: safeString(rawEnquiry.AssignedTo || rawEnquiry.assigned_to || rawEnquiry.instructor_id?.name || rawEnquiry.instructor_id),\n    FollowUpDate: safeString(rawEnquiry.FollowUpDate || (rawEnquiry.follow_up_date ? new Date(rawEnquiry.follow_up_date).toLocaleDateString('en-GB') : '')),\n    LastContactedAt: safeString(rawEnquiry.LastContactedAt || (rawEnquiry.last_contacted_at ? new Date(rawEnquiry.last_contacted_at).toLocaleDateString('en-GB') : '')),\n  };\n\n  return (\n    <div className=\"p-6 max-w-6xl mx-auto space-y-6\">\n\n      {/* BACK */}\n      <button\n        type=\"button\"\n        onClick={() => window.history.back()}\n        className=\"text-sm text-gray-600 hover:underline\"\n      >\n        ← Back to Enquiries\n      </button>\n\n      {/* HEADER */}\n      <div className=\"bg-white dark:bg-secondary-dark-bg rounded-xl p-6 shadow flex justify-between items-center\">\n        <div>\n          <h1 className=\"text-2xl font-bold\">\n            {enquiry.FullName}\n          </h1>\n          <p className=\"text-sm text-gray-500\">\n            Enquiry #{enquiry.EnquiryID} · {enquiry.CreatedAt}\n          </p>\n          <p className=\"text-sm text-gray-600\">\n            {enquiry.Phone} · {enquiry.Email}\n          </p>\n        </div>\n\n        <StatusBadge status={enquiry.EnquiryStatus} />\n      </div>\n\n      {/* MAIN GRID */}\n      <div className=\"grid grid-cols-1 lg:grid-cols-3 gap-6\">\n\n        {/* LEFT */}\n        <div className=\"lg:col-span-2 space-y-6\">\n\n          {/* BASIC INFO */}\n          <Card title=\"Enquiry Details\">\n            <Info label=\"Area\" value={enquiry.Area} />\n            <Info label=\"Postcode\" value={enquiry.Postcode} />\n            <Info label=\"Lesson Type\" value={enquiry.LessonType} />\n            <Info label=\"Preferred Transmission\" value={enquiry.Transmission} />\n            <Info label=\"Preferred Time\" value={enquiry.PreferredTime} />\n            <Info label=\"Start Timeline\" value={enquiry.StartTimeline} />\n          </Card>\n\n          {/* PACKAGE */}\n          <Card title=\"Interested Package\">\n            <Info label=\"Package\" value={enquiry.InterestedPackage} />\n            <Info label=\"Estimated Price\" value={enquiry.EstimatedPrice} />\n            <Info label=\"Zone\" value={enquiry.Zone} />\n          </Card>\n\n          {/* NOTES */}\n          <Card title=\"Notes\">\n            <p className=\"text-sm text-gray-700 whitespace-pre-line\">\n              {enquiry.Notes || 'No notes added yet.'}\n            </p>\n          </Card>\n\n        </div>\n\n        {/* RIGHT */}\n        <div className=\"space-y-6\">\n\n          {/* STATUS */}\n          <Card title=\"Lead Status\">\n            <Info label=\"Status\" value={enquiry.EnquiryStatus} />\n            <Info label=\"Priority\" value={enquiry.Priority} />\n            <Info label=\"Source\" value={enquiry.Source} />\n            <Info label=\"Assigned To\" value={enquiry.AssignedTo} />\n          </Card>\n\n          {/* FOLLOW UP */}\n          <Card title=\"Follow-up\">\n            <Info label=\"Follow-up Date\" value={enquiry.FollowUpDate} />\n            <Info label=\"Last Contacted\" value={enquiry.LastContactedAt} />\n          </Card>\n\n          {/* ACTIONS */}\n          <div className=\"bg-white dark:bg-secondary-dark-bg rounded-xl p-6 shadow space-y-3\">\n            <h3 className=\"font-semibold\">Quick Actions</h3>\n\n            <button type='button' className=\"w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition\">\n              Convert to Learner\n            </button>\n\n            <button type='button' className=\"w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition\">\n              Schedule Trial Lesson\n            </button>\n\n            <button type='button' className=\"w-full bg-gray-100 text-gray-700 py-2 rounded-lg hover:bg-gray-200 transition\">\n              Add Follow-up Note\n            </button>\n          </div>\n\n        </div>\n      </div>\n    </div>\n  );\n};",
+        "StartLine": 1,
+        "TargetContent": "import React from 'react';\nimport { useParams, Navigate, useLocation } from 'react-router-dom';\nimport { enquiriesData } from '../data/dummy';\nimport { useStateContext } from '../contexts/ContextProvider';\n\nconst EnquiryProfilePage = () => {\n  const { id } = useParams();\n  const location = useLocation();\n  const { allenquies } = useStateContext();\n\n  const contextEnq = allenquies?.find((e) => e._id === id || e.id === id || e.EnquiryID === Number(id));\n\n  const rawEnquiry =\n    location.state?.enquiry ||\n    contextEnq ||\n    enquiriesData.find((e) => e.EnquiryID === Number(id));\n\n  // 🔒 Safety check\n  if (!rawEnquiry) {\n    return <Navigate to=\"/enquiries\" replace />;\n  }\n\n  const getDynamicName = (obj) => {\n    if (!obj) return null;\n    const nameKey = Object.keys(obj).find(key => \n      key.toLowerCase().includes('name') && \n      typeof obj[key] === 'string' && \n      obj[key].trim() !== ''\n    );\n    return nameKey ? obj[nameKey] : null;\n  };\n\n  const enquiry = {\n    FullName: rawEnquiry.FullName || rawEnquiry.Name || rawEnquiry.name || rawEnquiry.full_name || (rawEnquiry.first_name ? `${rawEnquiry.first_name} ${rawEnquiry.last_name || ''}`.trim() : null) || getDynamicName(rawEnquiry) || '—',\n    EnquiryID: rawEnquiry.EnquiryID || rawEnquiry.id || rawEnquiry._id || '—',\n    CreatedAt: rawEnquiry.CreatedAt || (rawEnquiry.createdAt ? new Date(rawEnquiry.createdAt).toLocaleDateString('en-GB') : '') || '—',\n    Phone: rawEnquiry.Phone || rawEnquiry.phone || rawEnquiry.mobile || '—',\n    Email: rawEnquiry.Email || rawEnquiry.email || '—',\n    EnquiryStatus: rawEnquiry.EnquiryStatus || rawEnquiry.status || '—',\n    Area: rawEnquiry.Area || rawEnquiry.area || rawEnquiry.service_provided_area || '—',\n    Postcode: rawEnquiry.Postcode || rawEnquiry.postcode || '—',\n    LessonType: rawEnquiry.LessonType || rawEnquiry.lesson_type || rawEnquiry.type_of_training || '—',\n    Transmission: rawEnquiry.Transmission || rawEnquiry.transmission || rawEnquiry.preferred_transmission || '—',\n    PreferredTime: rawEnquiry.PreferredTime || rawEnquiry.preferred_time || rawEnquiry.lesson_preference_time || '—',\n    StartTimeline: rawEnquiry.StartTimeline || rawEnquiry.start_timeline || (rawEnquiry.preferred_start_date ? new Date(rawEnquiry.preferred_start_date).toLocaleDateString('en-GB') : '') || '—',\n    InterestedPackage: rawEnquiry.InterestedPackage || rawEnquiry.interested_package || rawEnquiry.package_name || rawEnquiry.package_id?.package_name || '—',\n    EstimatedPrice: rawEnquiry.EstimatedPrice || (rawEnquiry.estimated_price !== undefined ? `£${rawEnquiry.estimated_price}` : '') || (rawEnquiry.price !== undefined ? `£${rawEnquiry.price}` : '') || '—',\n    Zone: rawEnquiry.Zone || rawEnquiry.zone || '—',\n    Notes: rawEnquiry.Notes || rawEnquiry.notes || rawEnquiry.additional_message || '—',\n    Priority: rawEnquiry.Priority || rawEnquiry.priority || '—',\n    Source: rawEnquiry.Source || rawEnquiry.source || '—',\n    AssignedTo: rawEnquiry.AssignedTo || rawEnquiry.assigned_to || rawEnquiry.instructor_id?.name || '—',\n    FollowUpDate: rawEnquiry.FollowUpDate || (rawEnquiry.follow_up_date ? new Date(rawEnquiry.follow_up_date).toLocaleDateString('en-GB') : '') || '—',\n    LastContactedAt: rawEnquiry.LastContactedAt || (rawEnquiry.last_contacted_at ? new Date(rawEnquiry.last_contacted_at).toLocaleDateString('en-GB') : '') || '—',\n  };\n\n  return (\n    <div className=\"p-6 max-w-6xl mx-auto space-y-6\">\n\n      {/* BACK */}\n      <button\n        type=\"button\"\n        onClick={() => window.history.back()}\n        className=\"text-sm text-gray-600 hover:underline\"\n      >\n        ← Back to Enquiries\n      </button>\n\n      {/* HEADER */}\n      <div className=\"bg-white dark:bg-secondary-dark-bg rounded-xl p-6 shadow flex justify-between items-center\">\n        <div>\n          <h1 className=\"text-2xl font-bold\">\n            {enquiry.FullName}\n          </h1>\n          <p className=\"text-sm text-gray-500\">\n            Enquiry #{enquiry.EnquiryID} · {enquiry.CreatedAt}\n          </p>\n          <p className=\"text-sm text-gray-600\">\n            {enquiry.Phone} · {enquiry.Email}\n          </p>\n        </div>\n\n        <StatusBadge status={enquiry.EnquiryStatus} />\n      </div>\n\n      {/* MAIN GRID */}\n      <div className=\"grid grid-cols-1 lg:grid-cols-3 gap-6\">\n\n        {/* LEFT */}\n        <div className=\"lg:col-span-2 space-y-6\">\n\n          {/* BASIC INFO */}\n          <Card title=\"Enquiry Details\">\n            <Info label=\"Area\" value={enquiry.Area} />\n            <Info label=\"Postcode\" value={enquiry.Postcode} />\n            <Info label=\"Lesson Type\" value={enquiry.LessonType} />\n            <Info label=\"Preferred Transmission\" value={enquiry.Transmission} />\n            <Info label=\"Preferred Time\" value={enquiry.PreferredTime} />\n            <Info label=\"Start Timeline\" value={enquiry.StartTimeline} />\n          </Card>\n\n          {/* PACKAGE */}\n          <Card title=\"Interested Package\">\n            <Info label=\"Package\" value={enquiry.InterestedPackage} />\n            <Info label=\"Estimated Price\" value={enquiry.EstimatedPrice} />\n            <Info label=\"Zone\" value={enquiry.Zone} />\n          </Card>\n\n          {/* NOTES */}\n          <Card title=\"Notes\">\n            <p className=\"text-sm text-gray-700 whitespace-pre-line\">\n              {enquiry.Notes || 'No notes added yet.'}\n            </p>\n          </Card>\n\n        </div>\n\n        {/* RIGHT */}\n        <div className=\"space-y-6\">\n\n          {/* STATUS */}\n          <Card title=\"Lead Status\">\n            <Info label=\"Status\" value={enquiry.EnquiryStatus} />\n            <Info label=\"Priority\" value={enquiry.Priority} />\n            <Info label=\"Source\" value={enquiry.Source} />\n            <Info label=\"Assigned To\" value={enquiry.AssignedTo} />\n          </Card>\n\n          {/* FOLLOW UP */}\n          <Card title=\"Follow-up\">\n            <Info label=\"Follow-up Date\" value={enquiry.FollowUpDate} />\n            <Info label=\"Last Contacted\" value={enquiry.LastContactedAt} />\n          </Card>\n\n          {/* ACTIONS */}\n          <div className=\"bg-white dark:bg-secondary-dark-bg rounded-xl p-6 shadow space-y-3\">\n            <h3 className=\"font-semibold\">Quick Actions</h3>\n\n            <button type='button' className=\"w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition\">\n              Convert to Learner\n            </button>\n\n            <button type='button' className=\"w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition\">\n              Schedule Trial Lesson\n            </button>\n\n            <button type='button' className=\"w-full bg-gray-100 text-gray-700 py-2 rounded-lg hover:bg-gray-200 transition\">\n              Add Follow-up Note\n            </button>\n          </div>\n\n        </div>\n      </div>\n    </div>\n  );\n};",
+        "TargetFile": "d:\\sanjit\\drivepasslatestdashboard20june\\src\\pages\\EnquiryProfilePage.jsx",
+        "toolAction": "Replacing EnquiryProfilePage with a safe render approach",
+        "toolSummary": "Make EnquiryProfilePage safe"
+      }
+    }
+  },
+  {
+    "step": 94,
+    "tc": {
+      "name": "view_file",
+      "args": {
+        "AbsolutePath": "d:\\sanjit\\drivepasslatestdashboard20june\\src\\pages\\FranchiseEnquiryProfilePage.jsx",
+        "EndLine": 1107,
+        "StartLine": 700,
+        "toolAction": "Viewing FranchiseEnquiryProfilePage UI",
+        "toolSummary": "View FranchiseEnquiryProfilePage.jsx"
+      }
+    }
+  },
+  {
+    "step": 98,
+    "tc": {
+      "name": "run_command",
+      "args": {
+        "CommandLine": "npx eslint src/pages/EnquiryProfilePage.jsx",
+        "Cwd": "d:\\sanjit\\drivepasslatestdashboard20june",
+        "WaitMsBeforeAsync": 10000,
+        "toolAction": "Running eslint to confirm missing components",
+        "toolSummary": "Check eslint errors"
+      }
+    }
+  },
+  {
+    "step": 102,
+    "tc": {
+      "name": "view_file",
+      "args": {
+        "AbsolutePath": "d:\\sanjit\\drivepasslatestdashboard20june\\src\\pages\\EnquiryProfilePage.jsx",
+        "toolAction": "Viewing EnquiryProfilePage.jsx",
+        "toolSummary": "View EnquiryProfilePage"
+      }
+    }
+  },
+  {
+    "step": 105,
+    "tc": {
+      "name": "view_file",
+      "args": {
+        "AbsolutePath": "d:\\sanjit\\drivepasslatestdashboard20june\\src\\pages\\FranchiseEnquiryProfilePage.jsx",
+        "EndLine": 200,
+        "StartLine": 1,
+        "toolAction": "Viewing top of FranchiseEnquiryProfilePage",
+        "toolSummary": "View FranchiseEnquiryProfilePage"
+      }
+    }
+  },
+  {
+    "step": 109,
+    "tc": {
+      "name": "replace_file_content",
+      "args": {
+        "AllowMultiple": false,
+        "Description": "Upgraded EnquiryProfilePage.jsx to have the same premium, high-quality aesthetic design as the FranchiseEnquiryProfilePage, matching the user's expectations for visual excellence.",
+        "EndLine": 207,
+        "Instruction": "Replace the file content with the premium design layout.",
+        "ReplacementContent": "import React from 'react';\nimport { useParams, Navigate, useLocation } from 'react-router-dom';\nimport { enquiriesData } from '../data/dummy';\nimport { useStateContext } from '../contexts/ContextProvider';\nimport {\n  FiArrowLeft,\n  FiPhone,\n  FiMail,\n  FiCalendar,\n  FiMapPin,\n  FiClock,\n  FiFileText,\n  FiCheckCircle,\n  FiUser,\n  FiCalendar as FiCal,\n  FiMessageSquare,\n  FiTag,\n  FiCompass,\n  FiBox,\n  FiDollarSign\n} from 'react-icons/fi';\n\nconst safeString = (val) => {\n  if (val === null || val === undefined) return '';\n  if (typeof val === 'object') {\n    return val.name || val.title || val.full_name || val.first_name || JSON.stringify(val);\n  }\n  return String(val);\n};\n\nconst EnquiryProfilePage = () => {\n  const { id } = useParams();\n  const location = useLocation();\n  const { allenquies } = useStateContext();\n\n  const contextEnq = allenquies?.find((e) => e._id === id || e.id === id || e.EnquiryID === Number(id));\n\n  const rawEnquiry =\n    location.state?.enquiry ||\n    contextEnq ||\n    enquiriesData.find((e) => e.EnquiryID === Number(id));\n\n  if (!rawEnquiry) {\n    return (\n      <div className=\"p-6 max-w-6xl mx-auto space-y-6 flex flex-col items-center justify-center min-h-screen\">\n        <h2 className=\"text-xl font-bold\">Enquiry not found</h2>\n        <p>Could not load data for ID: {id}</p>\n        <button onClick={() => window.history.back()} className=\"px-4 py-2 bg-blue-500 text-white rounded\">Go Back</button>\n      </div>\n    );\n  }\n\n  const getDynamicName = (obj) => {\n    if (!obj) return null;\n    const nameKey = Object.keys(obj).find(key => \n      key.toLowerCase().includes('name') && \n      typeof obj[key] === 'string' && \n      obj[key].trim() !== ''\n    );\n    return nameKey ? obj[nameKey] : null;\n  };\n\n  const enquiry = {\n    FullName: safeString(rawEnquiry.FullName || rawEnquiry.Name || rawEnquiry.name || rawEnquiry.full_name || (rawEnquiry.first_name ? `${rawEnquiry.first_name} ${rawEnquiry.last_name || ''}`.trim() : null) || getDynamicName(rawEnquiry)),\n    EnquiryID: safeString(rawEnquiry.EnquiryID || rawEnquiry.id || rawEnquiry._id),\n    CreatedAt: safeString(rawEnquiry.CreatedAt || (rawEnquiry.createdAt ? new Date(rawEnquiry.createdAt).toLocaleDateString('en-GB') : '')),\n    Phone: safeString(rawEnquiry.Phone || rawEnquiry.phone || rawEnquiry.mobile),\n    Email: safeString(rawEnquiry.Email || rawEnquiry.email),\n    EnquiryStatus: safeString(rawEnquiry.EnquiryStatus || rawEnquiry.status),\n    Area: safeString(rawEnquiry.Area || rawEnquiry.area || rawEnquiry.service_provided_area),\n    Postcode: safeString(rawEnquiry.Postcode || rawEnquiry.postcode),\n    LessonType: safeString(rawEnquiry.LessonType || rawEnquiry.lesson_type || rawEnquiry.type_of_training),\n    Transmission: safeString(rawEnquiry.Transmission || rawEnquiry.transmission || rawEnquiry.preferred_transmission),\n    PreferredTime: safeString(rawEnquiry.PreferredTime || rawEnquiry.preferred_time || rawEnquiry.lesson_preference_time),\n    StartTimeline: safeString(rawEnquiry.StartTimeline || rawEnquiry.start_timeline || (rawEnquiry.preferred_start_date ? new Date(rawEnquiry.preferred_start_date).toLocaleDateString('en-GB') : '')),\n    InterestedPackage: safeString(rawEnquiry.InterestedPackage || rawEnquiry.interested_package || rawEnquiry.package_name || rawEnquiry.package_id?.package_name),\n    EstimatedPrice: safeString(rawEnquiry.EstimatedPrice || (rawEnquiry.estimated_price !== undefined ? `£${rawEnquiry.estimated_price}` : '') || (rawEnquiry.price !== undefined ? `£${rawEnquiry.price}` : '')),\n    Zone: safeString(rawEnquiry.Zone || rawEnquiry.zone),\n    Notes: safeString(rawEnquiry.Notes || rawEnquiry.notes || rawEnquiry.additional_message),\n    Priority: safeString(rawEnquiry.Priority || rawEnquiry.priority),\n    Source: safeString(rawEnquiry.Source || rawEnquiry.source),\n    AssignedTo: safeString(rawEnquiry.AssignedTo || rawEnquiry.assigned_to || rawEnquiry.instructor_id?.name || rawEnquiry.instructor_id),\n    FollowUpDate: safeString(rawEnquiry.FollowUpDate || (rawEnquiry.follow_up_date ? new Date(rawEnquiry.follow_up_date).toLocaleDateString('en-GB') : '')),\n    LastContactedAt: safeString(rawEnquiry.LastContactedAt || (rawEnquiry.last_contacted_at ? new Date(rawEnquiry.last_contacted_at).toLocaleDateString('en-GB') : '')),\n  };\n\n  return (\n    <div className=\"p-4 md:p-8 max-w-6xl mx-auto space-y-8 bg-slate-50/30 dark:bg-transparent min-h-screen transition-colors duration-300\">\n      \n      {/* BACK */}\n      <div>\n        <button\n          type=\"button\"\n          onClick={() => window.history.back()}\n          className=\"group flex items-center gap-2 text-xs font-bold text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white bg-white dark:bg-[#1e293b] px-4 py-2.5 rounded-xl border border-slate-150/40 dark:border-slate-800/40 shadow-sm hover:shadow-md active:scale-95 transition-all select-none\"\n        >\n          <FiArrowLeft className=\"text-sm transition-transform group-hover:-translate-x-0.5\" />\n          Back to Enquiries\n        </button>\n      </div>\n\n      {/* HEADER */}\n      <div className=\"flex flex-col md:flex-row justify-between items-start md:items-center gap-6 p-6 md:p-8 bg-white dark:bg-[#1e293b] rounded-3xl border border-slate-100 dark:border-slate-800/40 shadow-sm transition-all duration-300\">\n        <div className=\"flex items-center gap-5\">\n          <div className=\"w-16 h-16 rounded-2xl bg-gradient-to-tr from-teal-500 to-indigo-650 flex items-center justify-center text-white font-extrabold text-2xl shadow-lg shadow-indigo-500/10\">\n            {enquiry.FullName && enquiry.FullName !== '—'\n              ? enquiry.FullName.charAt(0).toUpperCase()\n              : 'E'}\n          </div>\n          <div className=\"space-y-1\">\n            <div className=\"flex items-center gap-3 flex-wrap\">\n              <h1 className=\"text-2xl font-extrabold text-slate-800 dark:text-slate-100 tracking-tight\">\n                {enquiry.FullName || '—'}\n              </h1>\n              <StatusBadge status={enquiry.EnquiryStatus} />\n            </div>\n            <p className=\"text-slate-400 dark:text-slate-500 text-xs font-semibold\">\n              Enquiry #{enquiry.EnquiryID} · Received {enquiry.CreatedAt}\n            </p>\n            <div className=\"text-slate-500 dark:text-slate-400 text-xs mt-1.5 font-bold flex flex-wrap gap-x-4 gap-y-1\">\n              {enquiry.Phone && enquiry.Phone !== '—' && (\n                <a\n                  href={`tel:${enquiry.Phone}`}\n                  className=\"flex items-center gap-1.5 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors\"\n                >\n                  <FiPhone className=\"text-slate-400\" /> {enquiry.Phone}\n                </a>\n              )}\n              {enquiry.Phone && enquiry.Phone !== '—' && enquiry.Email && enquiry.Email !== '—' && (\n                <span className=\"hidden sm:inline text-slate-300 dark:text-slate-700\">|</span>\n              )}\n              {enquiry.Email && enquiry.Email !== '—' && (\n                <a\n                  href={`mailto:${enquiry.Email}`}\n                  className=\"flex items-center gap-1.5 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors\"\n                >\n                  <FiMail className=\"text-slate-400\" /> {enquiry.Email}\n                </a>\n              )}\n            </div>\n          </div>\n        </div>\n      </div>\n\n      {/* MAIN GRID */}\n      <div className=\"grid grid-cols-1 lg:grid-cols-3 gap-8\">\n\n        {/* LEFT */}\n        <div className=\"lg:col-span-2 space-y-8\">\n          {/* BASIC INFO */}\n          <Card title=\"Enquiry Details\" icon={<FiFileText className=\"text-indigo-500\" />}>\n             <div className=\"grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2\">\n                <DetailRow label=\"Area\" value={enquiry.Area} icon={<FiMapPin />} />\n                <DetailRow label=\"Postcode\" value={enquiry.Postcode} icon={<FiCompass />} />\n                <DetailRow label=\"Lesson Type\" value={enquiry.LessonType} icon={<FiBookOpen />} />\n                <DetailRow label=\"Preferred Transmission\" value={enquiry.Transmission} icon={<FiSettings />} />\n                <DetailRow label=\"Preferred Time\" value={enquiry.PreferredTime} icon={<FiClock />} />\n                <DetailRow label=\"Start Timeline\" value={enquiry.StartTimeline} icon={<FiCalendar />} />\n             </div>\n          </Card>\n\n          {/* PACKAGE */}\n          <Card title=\"Interested Package\" icon={<FiBox className=\"text-fuchsia-500\" />}>\n             <div className=\"grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2\">\n                <DetailRow label=\"Package\" value={enquiry.InterestedPackage} icon={<FiTag />} />\n                <DetailRow label=\"Estimated Price\" value={enquiry.EstimatedPrice} icon={<FiDollarSign />} />\n                <DetailRow label=\"Zone\" value={enquiry.Zone} icon={<FiMapPin />} />\n             </div>\n          </Card>\n\n          {/* NOTES */}\n          <Card title=\"Notes\" icon={<FiMessageSquare className=\"text-blue-500\" />}>\n            <p className=\"text-xs font-semibold text-slate-600 dark:text-slate-400 whitespace-pre-line leading-relaxed\">\n              {enquiry.Notes || 'No notes added yet.'}\n            </p>\n          </Card>\n\n        </div>\n\n        {/* RIGHT */}\n        <div className=\"space-y-8\">\n\n          {/* STATUS */}\n          <Card title=\"Lead Status\" icon={<FiCheckCircle className=\"text-teal-500\" />}>\n             <div className=\"grid grid-cols-1 gap-y-2\">\n                <DetailRow label=\"Priority\" value={enquiry.Priority} />\n                <DetailRow label=\"Source\" value={enquiry.Source} />\n                <DetailRow label=\"Assigned To\" value={enquiry.AssignedTo} icon={<FiUser />} />\n             </div>\n          </Card>\n\n          {/* FOLLOW UP */}\n          <Card title=\"Follow-up\" icon={<FiCal className=\"text-orange-500\" />}>\n             <div className=\"grid grid-cols-1 gap-y-2\">\n                <DetailRow label=\"Follow-up Date\" value={enquiry.FollowUpDate} />\n                <DetailRow label=\"Last Contacted\" value={enquiry.LastContactedAt} />\n             </div>\n          </Card>\n\n          {/* ACTIONS */}\n          <div className=\"premium-card bg-white dark:bg-[#1e293b] rounded-3xl p-6 border border-slate-100 dark:border-slate-800/40 shadow-sm space-y-4\">\n            <h3 className=\"text-sm font-extrabold text-slate-800 dark:text-slate-200 flex items-center gap-2 pb-2 border-b border-slate-100 dark:border-slate-800/40 w-full\">\n              <span className=\"w-1.5 h-4 bg-teal-500 rounded-full\" />\n              Quick Actions\n            </h3>\n\n            <div className=\"space-y-3 pt-1\">\n              <button type='button' className=\"w-full bg-gradient-to-r from-teal-500 to-emerald-600 hover:from-teal-600 hover:to-emerald-700 text-white font-bold text-[11px] uppercase tracking-wider py-3.5 rounded-xl shadow-lg shadow-teal-500/10 active:scale-[0.98] transition-all flex items-center justify-center gap-2\">\n                Convert to Learner\n              </button>\n\n              <button type='button' className=\"w-full bg-gradient-to-r from-indigo-500 to-blue-600 hover:from-indigo-600 hover:to-blue-700 text-white font-bold text-[11px] uppercase tracking-wider py-3.5 rounded-xl shadow-lg shadow-indigo-500/10 active:scale-[0.98] transition-all flex items-center justify-center gap-2\">\n                Schedule Trial Lesson\n              </button>\n\n              <button type='button' className=\"w-full bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 font-bold text-[11px] uppercase tracking-wider py-3.5 rounded-xl transition-all active:scale-[0.98]\">\n                Add Follow-up Note\n              </button>\n            </div>\n          </div>\n\n        </div>\n      </div>\n    </div>\n  );\n};\n\nexport default EnquiryProfilePage;\n\n/* ================= SMALL COMPONENTS ================= */\n\nconst Card = ({ title, icon, children }) => (\n  <div className=\"premium-card bg-white dark:bg-[#1e293b] rounded-3xl p-6 border border-slate-100 dark:border-slate-800/40 shadow-sm space-y-4 transition-all duration-300\">\n    <h3 className=\"text-sm font-extrabold text-slate-800 dark:text-slate-200 flex items-center gap-2 pb-2 border-b border-slate-100 dark:border-slate-800/40 w-full\">\n      <span className=\"w-1.5 h-4 bg-indigo-500 rounded-full\" />\n      {icon && <span className=\"text-sm\">{icon}</span>}\n      {title}\n    </h3>\n    <div className=\"space-y-3\">{children}</div>\n  </div>\n);\n\nconst DetailRow = ({ label, value, icon }) => (\n  <div className=\"flex flex-col gap-1.5 py-3 border-b border-slate-100/50 dark:border-slate-800/40 last:border-b-0 last:pb-0\">\n    <span className=\"text-[10px] text-slate-400 dark:text-slate-400 font-bold uppercase tracking-wider flex items-center gap-1.5\">\n      {icon && <span className=\"text-indigo-500 text-[12px]\">{icon}</span>}\n      {label}\n    </span>\n    <span className=\"font-extrabold text-sm text-slate-800 dark:text-slate-100 truncate pl-1\">\n      {value || '—'}\n    </span>\n  </div>\n);\n\nconst StatusBadge = ({ status }) => {\n  const styles = {\n    new: 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/25',\n    contacted: 'bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border-indigo-500/25',\n    booked: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/25',\n    'waiting list': 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/25',\n    'no response': 'bg-slate-500/10 text-slate-600 dark:text-slate-400 border-slate-500/25',\n    'test-only enquiry': 'bg-fuchsia-500/10 text-fuchsia-600 dark:text-fuchsia-400 border-fuchsia-500/25',\n    'passed to office': 'bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/25',\n    'quoted / price given': 'bg-teal-500/10 text-teal-600 dark:text-teal-400 border-teal-500/25',\n    'call back later': 'bg-orange-500/10 text-orange-600 dark:text-orange-400 border-orange-500/25',\n    lost: 'bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/25',\n  };\n\n  const key = String(status || 'new').toLowerCase().trim();\n\n  return (\n    <span\n      className={`px-3 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider border select-none ${styles[key] || styles.new}`}\n    >\n      {status || 'New'}\n    </span>\n  );\n};",
+        "StartLine": 1,
+        "TargetContent": "import React from 'react';\nimport { useParams, Navigate, useLocation } from 'react-router-dom';\nimport { enquiriesData } from '../data/dummy';\nimport { useStateContext } from '../contexts/ContextProvider';\n\nconst safeString = (val) => {\n  if (val === null || val === undefined) return '—';\n  if (typeof val === 'object') {\n    return val.name || val.title || val.full_name || val.first_name || JSON.stringify(val);\n  }\n  return String(val);\n};\n\nconst EnquiryProfilePage = () => {\n  const { id } = useParams();\n  const location = useLocation();\n  const { allenquies } = useStateContext();\n\n  const contextEnq = allenquies?.find((e) => e._id === id || e.id === id || e.EnquiryID === Number(id));\n\n  const rawEnquiry =\n    location.state?.enquiry ||\n    contextEnq ||\n    enquiriesData.find((e) => e.EnquiryID === Number(id));\n\n  if (!rawEnquiry) {\n    return (\n      <div className=\"p-6 max-w-6xl mx-auto space-y-6 flex flex-col items-center justify-center min-h-screen\">\n        <h2 className=\"text-xl font-bold\">Enquiry not found</h2>\n        <p>Could not load data for ID: {id}</p>\n        <button onClick={() => window.history.back()} className=\"px-4 py-2 bg-blue-500 text-white rounded\">Go Back</button>\n      </div>\n    );\n  }\n\n  const getDynamicName = (obj) => {\n    if (!obj) return null;\n    const nameKey = Object.keys(obj).find(key => \n      key.toLowerCase().includes('name') && \n      typeof obj[key] === 'string' && \n      obj[key].trim() !== ''\n    );\n    return nameKey ? obj[nameKey] : null;\n  };\n\n  const enquiry = {\n    FullName: safeString(rawEnquiry.FullName || rawEnquiry.Name || rawEnquiry.name || rawEnquiry.full_name || (rawEnquiry.first_name ? `${rawEnquiry.first_name} ${rawEnquiry.last_name || ''}`.trim() : null) || getDynamicName(rawEnquiry)),\n    EnquiryID: safeString(rawEnquiry.EnquiryID || rawEnquiry.id || rawEnquiry._id),\n    CreatedAt: safeString(rawEnquiry.CreatedAt || (rawEnquiry.createdAt ? new Date(rawEnquiry.createdAt).toLocaleDateString('en-GB') : '')),\n    Phone: safeString(rawEnquiry.Phone || rawEnquiry.phone || rawEnquiry.mobile),\n    Email: safeString(rawEnquiry.Email || rawEnquiry.email),\n    EnquiryStatus: safeString(rawEnquiry.EnquiryStatus || rawEnquiry.status),\n    Area: safeString(rawEnquiry.Area || rawEnquiry.area || rawEnquiry.service_provided_area),\n    Postcode: safeString(rawEnquiry.Postcode || rawEnquiry.postcode),\n    LessonType: safeString(rawEnquiry.LessonType || rawEnquiry.lesson_type || rawEnquiry.type_of_training),\n    Transmission: safeString(rawEnquiry.Transmission || rawEnquiry.transmission || rawEnquiry.preferred_transmission),\n    PreferredTime: safeString(rawEnquiry.PreferredTime || rawEnquiry.preferred_time || rawEnquiry.lesson_preference_time),\n    StartTimeline: safeString(rawEnquiry.StartTimeline || rawEnquiry.start_timeline || (rawEnquiry.preferred_start_date ? new Date(rawEnquiry.preferred_start_date).toLocaleDateString('en-GB') : '')),\n    InterestedPackage: safeString(rawEnquiry.InterestedPackage || rawEnquiry.interested_package || rawEnquiry.package_name || rawEnquiry.package_id?.package_name),\n    EstimatedPrice: safeString(rawEnquiry.EstimatedPrice || (rawEnquiry.estimated_price !== undefined ? `£${rawEnquiry.estimated_price}` : '') || (rawEnquiry.price !== undefined ? `£${rawEnquiry.price}` : '')),\n    Zone: safeString(rawEnquiry.Zone || rawEnquiry.zone),\n    Notes: safeString(rawEnquiry.Notes || rawEnquiry.notes || rawEnquiry.additional_message),\n    Priority: safeString(rawEnquiry.Priority || rawEnquiry.priority),\n    Source: safeString(rawEnquiry.Source || rawEnquiry.source),\n    AssignedTo: safeString(rawEnquiry.AssignedTo || rawEnquiry.assigned_to || rawEnquiry.instructor_id?.name || rawEnquiry.instructor_id),\n    FollowUpDate: safeString(rawEnquiry.FollowUpDate || (rawEnquiry.follow_up_date ? new Date(rawEnquiry.follow_up_date).toLocaleDateString('en-GB') : '')),\n    LastContactedAt: safeString(rawEnquiry.LastContactedAt || (rawEnquiry.last_contacted_at ? new Date(rawEnquiry.last_contacted_at).toLocaleDateString('en-GB') : '')),\n  };\n\n  return (\n    <div className=\"p-6 max-w-6xl mx-auto space-y-6\">\n\n      {/* BACK */}\n      <button\n        type=\"button\"\n        onClick={() => window.history.back()}\n        className=\"text-sm text-gray-600 hover:underline\"\n      >\n        ← Back to Enquiries\n      </button>\n\n      {/* HEADER */}\n      <div className=\"bg-white dark:bg-secondary-dark-bg rounded-xl p-6 shadow flex justify-between items-center\">\n        <div>\n          <h1 className=\"text-2xl font-bold\">\n            {enquiry.FullName}\n          </h1>\n          <p className=\"text-sm text-gray-500\">\n            Enquiry #{enquiry.EnquiryID} · {enquiry.CreatedAt}\n          </p>\n          <p className=\"text-sm text-gray-600\">\n            {enquiry.Phone} · {enquiry.Email}\n          </p>\n        </div>\n\n        <StatusBadge status={enquiry.EnquiryStatus} />\n      </div>\n\n      {/* MAIN GRID */}\n      <div className=\"grid grid-cols-1 lg:grid-cols-3 gap-6\">\n\n        {/* LEFT */}\n        <div className=\"lg:col-span-2 space-y-6\">\n\n          {/* BASIC INFO */}\n          <Card title=\"Enquiry Details\">\n            <Info label=\"Area\" value={enquiry.Area} />\n            <Info label=\"Postcode\" value={enquiry.Postcode} />\n            <Info label=\"Lesson Type\" value={enquiry.LessonType} />\n            <Info label=\"Preferred Transmission\" value={enquiry.Transmission} />\n            <Info label=\"Preferred Time\" value={enquiry.PreferredTime} />\n            <Info label=\"Start Timeline\" value={enquiry.StartTimeline} />\n          </Card>\n\n          {/* PACKAGE */}\n          <Card title=\"Interested Package\">\n            <Info label=\"Package\" value={enquiry.InterestedPackage} />\n            <Info label=\"Estimated Price\" value={enquiry.EstimatedPrice} />\n            <Info label=\"Zone\" value={enquiry.Zone} />\n          </Card>\n\n          {/* NOTES */}\n          <Card title=\"Notes\">\n            <p className=\"text-sm text-gray-700 whitespace-pre-line\">\n              {enquiry.Notes || 'No notes added yet.'}\n            </p>\n          </Card>\n\n        </div>\n\n        {/* RIGHT */}\n        <div className=\"space-y-6\">\n\n          {/* STATUS */}\n          <Card title=\"Lead Status\">\n            <Info label=\"Status\" value={enquiry.EnquiryStatus} />\n            <Info label=\"Priority\" value={enquiry.Priority} />\n            <Info label=\"Source\" value={enquiry.Source} />\n            <Info label=\"Assigned To\" value={enquiry.AssignedTo} />\n          </Card>\n\n          {/* FOLLOW UP */}\n          <Card title=\"Follow-up\">\n            <Info label=\"Follow-up Date\" value={enquiry.FollowUpDate} />\n            <Info label=\"Last Contacted\" value={enquiry.LastContactedAt} />\n          </Card>\n\n          {/* ACTIONS */}\n          <div className=\"bg-white dark:bg-secondary-dark-bg rounded-xl p-6 shadow space-y-3\">\n            <h3 className=\"font-semibold\">Quick Actions</h3>\n\n            <button type='button' className=\"w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition\">\n              Convert to Learner\n            </button>\n\n            <button type='button' className=\"w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition\">\n              Schedule Trial Lesson\n            </button>\n\n            <button type='button' className=\"w-full bg-gray-100 text-gray-700 py-2 rounded-lg hover:bg-gray-200 transition\">\n              Add Follow-up Note\n            </button>\n          </div>\n\n        </div>\n      </div>\n    </div>\n  );\n};\n\nexport default EnquiryProfilePage;\n\n/* ================= SMALL COMPONENTS ================= */\n\nconst Card = ({ title, children }) => (\n  <div className=\"bg-white dark:bg-secondary-dark-bg rounded-xl p-6 shadow space-y-4\">\n    <h3 className=\"font-semibold\">{title}</h3>\n    <div className=\"space-y-2\">{children}</div>\n  </div>\n);\n\nconst Info = ({ label, value }) => (\n  <div className=\"flex justify-between text-sm\">\n    <span className=\"text-gray-500\">{label}</span>\n    <span className=\"font-medium text-right\">{value}</span>\n  </div>\n);\n\nconst StatusBadge = ({ status }) => {\n  const styles = {\n    New: 'bg-blue-100 text-blue-700',\n    Contacted: 'bg-indigo-100 text-indigo-700',\n    'Follow-up': 'bg-yellow-100 text-yellow-700',\n    Converted: 'bg-green-100 text-green-700',\n    Lost: 'bg-red-100 text-red-700',\n    'Not Interested': 'bg-gray-100 text-gray-600',\n  };\n\n  return (\n    <span\n      className={`px-4 py-1 rounded-full text-sm font-medium ${styles[status] || 'bg-gray-100 text-gray-600'}`}\n    >\n      {status}\n    </span>\n  );\n};",
+        "TargetFile": "d:\\sanjit\\drivepasslatestdashboard20june\\src\\pages\\EnquiryProfilePage.jsx",
+        "toolAction": "Applying premium Franchise design to EnquiryProfilePage",
+        "toolSummary": "Apply premium design"
+      }
+    }
+  },
+  {
+    "step": 112,
+    "tc": {
+      "name": "run_command",
+      "args": {
+        "CommandLine": "npx eslint src/pages/EnquiryProfilePage.jsx",
+        "Cwd": "d:\\sanjit\\drivepasslatestdashboard20june",
+        "WaitMsBeforeAsync": 5000,
+        "toolAction": "Running eslint to verify new design code",
+        "toolSummary": "Verify EnquiryProfilePage.jsx"
+      }
+    }
+  },
+  {
+    "step": 118,
+    "tc": {
+      "name": "run_command",
+      "args": {
+        "CommandLine": "npx eslint --fix src/pages/EnquiryProfilePage.jsx",
+        "Cwd": "d:\\sanjit\\drivepasslatestdashboard20june",
+        "WaitMsBeforeAsync": 5000,
+        "toolAction": "Fixing ESLint warnings in EnquiryProfilePage",
+        "toolSummary": "Fix ESLint warnings"
+      }
+    }
+  },
+  {
+    "step": 122,
+    "tc": {
+      "name": "replace_file_content",
+      "args": {
+        "AllowMultiple": false,
+        "Description": "Added missing React Icon imports to EnquiryProfilePage.jsx.",
+        "EndLine": 21,
+        "Instruction": "Update imports in EnquiryProfilePage.jsx to include FiBookOpen and FiSettings.",
+        "ReplacementContent": "import {\n  FiArrowLeft,\n  FiPhone,\n  FiMail,\n  FiCalendar,\n  FiMapPin,\n  FiClock,\n  FiFileText,\n  FiCheckCircle,\n  FiUser,\n  FiCalendar as FiCal,\n  FiMessageSquare,\n  FiTag,\n  FiCompass,\n  FiBox,\n  FiDollarSign,\n  FiBookOpen,\n  FiSettings\n} from 'react-icons/fi';",
+        "StartLine": 5,
+        "TargetContent": "import {\n  FiArrowLeft,\n  FiPhone,\n  FiMail,\n  FiCalendar,\n  FiMapPin,\n  FiClock,\n  FiFileText,\n  FiCheckCircle,\n  FiUser,\n  FiCalendar as FiCal,\n  FiMessageSquare,\n  FiTag,\n  FiCompass,\n  FiBox,\n  FiDollarSign\n} from 'react-icons/fi';",
+        "TargetFile": "d:\\sanjit\\drivepasslatestdashboard20june\\src\\pages\\EnquiryProfilePage.jsx",
+        "toolAction": "Fixing missing icon imports in EnquiryProfilePage.jsx",
+        "toolSummary": "Fix missing imports"
+      }
+    }
+  },
+  {
+    "step": 132,
+    "tc": {
+      "name": "run_command",
+      "args": {
+        "CommandLine": "git log -n 1 -p src/pages/EnquiryProfilePage.jsx",
+        "Cwd": "d:\\sanjit\\drivepasslatestdashboard20june",
+        "WaitMsBeforeAsync": 5000,
+        "toolAction": "Checking git history for EnquiryProfilePage",
+        "toolSummary": "Check git history"
+      }
+    }
+  },
+  {
+    "step": 150,
+    "tc": {
+      "name": "replace_file_content",
+      "args": {
+        "AllowMultiple": false,
+        "Description": "Redesigned EnquiryProfilePage.jsx to match the user's mockup precisely, including sections like COURSE PREFERENCES, SCHEDULE & CONTACT, STUDENT PROFILE & LEAD INFO, Student emails, and the two-column sidebar layout.",
+        "EndLine": 211,
+        "Instruction": "Replace the entire file with the precise design shown in the user's screenshot.",
+        "ReplacementContent": "import React, { useState } from 'react';\nimport { useParams, Navigate, useLocation } from 'react-router-dom';\nimport { enquiriesData } from '../data/dummy';\nimport { useStateContext } from '../contexts/ContextProvider';\nimport {\n  FiArrowLeft,\n  FiPhone,\n  FiMail,\n  FiEdit,\n  FiFileText,\n  FiBookOpen,\n  FiCalendar,\n  FiClock,\n  FiMapPin,\n  FiMessageSquare,\n  FiActivity,\n  FiCheckCircle,\n  FiUser,\n  FiSend,\n  FiSave,\n  FiTrash2,\n  FiFlag\n} from 'react-icons/fi';\n\nconst safeString = (val) => {\n  if (val === null || val === undefined) return '';\n  if (typeof val === 'object') {\n    return val.name || val.title || val.full_name || val.first_name || JSON.stringify(val);\n  }\n  return String(val);\n};\n\nconst EnquiryProfilePage = () => {\n  const { id } = useParams();\n  const location = useLocation();\n  const { allenquies } = useStateContext();\n\n  const [status, setStatus] = useState('Confirm');\n  const [instructor, setInstructor] = useState('Unassigned');\n\n  const contextEnq = allenquies?.find((e) => e._id === id || e.id === id || e.EnquiryID === Number(id));\n\n  const rawEnquiry =\n    location.state?.enquiry ||\n    contextEnq ||\n    enquiriesData.find((e) => e.EnquiryID === Number(id));\n\n  if (!rawEnquiry) {\n    return (\n      <div className=\"p-6 max-w-6xl mx-auto space-y-6 flex flex-col items-center justify-center min-h-screen bg-slate-50\">\n        <h2 className=\"text-xl font-bold\">Enquiry not found</h2>\n        <p>Could not load data for ID: {id}</p>\n        <button onClick={() => window.history.back()} className=\"px-4 py-2 bg-blue-500 text-white rounded\">Go Back</button>\n      </div>\n    );\n  }\n\n  const getDynamicName = (obj) => {\n    if (!obj) return null;\n    const nameKey = Object.keys(obj).find(key => \n      key.toLowerCase().includes('name') && \n      typeof obj[key] === 'string' && \n      obj[key].trim() !== ''\n    );\n    return nameKey ? obj[nameKey] : null;\n  };\n\n  const enquiry = {\n    FullName: safeString(rawEnquiry.FullName || rawEnquiry.Name || rawEnquiry.name || rawEnquiry.full_name || (rawEnquiry.first_name ? `${rawEnquiry.first_name} ${rawEnquiry.last_name || ''}`.trim() : null) || getDynamicName(rawEnquiry)),\n    EnquiryID: safeString(rawEnquiry.EnquiryID || rawEnquiry.id || rawEnquiry._id),\n    CreatedAt: safeString(rawEnquiry.CreatedAt || (rawEnquiry.createdAt ? new Date(rawEnquiry.createdAt).toLocaleDateString('en-GB') : '')),\n    Phone: safeString(rawEnquiry.Phone || rawEnquiry.phone || rawEnquiry.mobile),\n    Email: safeString(rawEnquiry.Email || rawEnquiry.email),\n    EnquiryStatus: safeString(rawEnquiry.EnquiryStatus || rawEnquiry.status),\n    Area: safeString(rawEnquiry.Area || rawEnquiry.area || rawEnquiry.service_provided_area),\n    Postcode: safeString(rawEnquiry.Postcode || rawEnquiry.postcode),\n    LessonType: safeString(rawEnquiry.LessonType || rawEnquiry.lesson_type || rawEnquiry.type_of_training || rawEnquiry.InterestedPackage || rawEnquiry.interested_package || rawEnquiry.package_name),\n    Transmission: safeString(rawEnquiry.Transmission || rawEnquiry.transmission || rawEnquiry.preferred_transmission),\n    PreferredTime: safeString(rawEnquiry.PreferredTime || rawEnquiry.preferred_time || rawEnquiry.lesson_preference_time),\n    StartTimeline: safeString(rawEnquiry.StartTimeline || rawEnquiry.start_timeline || (rawEnquiry.preferred_start_date ? new Date(rawEnquiry.preferred_start_date).toLocaleDateString('en-GB') : '')),\n    Notes: safeString(rawEnquiry.Notes || rawEnquiry.notes || rawEnquiry.additional_message),\n    Source: safeString(rawEnquiry.Source || rawEnquiry.source || 'Referral'),\n    DrivingExperience: safeString(rawEnquiry.DrivingExperience || rawEnquiry.driving_experience || 'Beginner'),\n    HasLicence: safeString(rawEnquiry.HasLicence || rawEnquiry.licence || 'Yes'),\n    ContactPreference: safeString(rawEnquiry.ContactPreference || rawEnquiry.preferred_contact_method || 'Phone call'),\n  };\n\n  return (\n    <div className=\"p-4 md:p-8 max-w-7xl mx-auto space-y-6 bg-slate-50 min-h-screen font-sans\">\n      \n      {/* BACK */}\n      <div>\n        <button\n          type=\"button\"\n          onClick={() => window.history.back()}\n          className=\"flex items-center gap-2 text-xs font-semibold text-slate-600 bg-white px-4 py-2 rounded-lg border border-slate-200 shadow-sm hover:bg-slate-50 transition-all\"\n        >\n          <FiArrowLeft className=\"text-sm\" />\n          Back to Enquiries\n        </button>\n      </div>\n\n      {/* HEADER */}\n      <div className=\"flex flex-col md:flex-row justify-between items-start md:items-center gap-6 p-6 bg-white rounded-2xl shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-slate-100\">\n        <div className=\"flex items-center gap-5\">\n          <div className=\"w-14 h-14 rounded-2xl bg-teal-400 flex items-center justify-center text-white font-bold text-2xl shadow-sm\">\n            {enquiry.FullName ? enquiry.FullName.charAt(0).toUpperCase() : 'E'}\n          </div>\n          <div className=\"space-y-1\">\n            <div className=\"flex items-center gap-3\">\n              <h1 className=\"text-xl font-bold text-slate-800 tracking-tight\">\n                {enquiry.FullName || '—'}\n              </h1>\n              <span className=\"px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-blue-50 text-blue-600 border border-blue-200\">\n                NEW\n              </span>\n            </div>\n            <p className=\"text-slate-400 text-xs font-medium\">\n              Enquiry #{enquiry.EnquiryID} · Received {enquiry.CreatedAt}\n            </p>\n            <div className=\"text-slate-500 text-xs mt-1 font-medium flex gap-4\">\n              {enquiry.Phone && (\n                <a href={`tel:${enquiry.Phone}`} className=\"flex items-center gap-1.5 hover:text-slate-700\">\n                  <FiPhone className=\"text-slate-400\" /> {enquiry.Phone}\n                </a>\n              )}\n              {enquiry.Phone && enquiry.Email && <span className=\"text-slate-300\">|</span>}\n              {enquiry.Email && (\n                <a href={`mailto:${enquiry.Email}`} className=\"flex items-center gap-1.5 hover:text-slate-700\">\n                  <FiMail className=\"text-slate-400\" /> {enquiry.Email}\n                </a>\n              )}\n            </div>\n          </div>\n        </div>\n        <button className=\"flex items-center gap-2 px-6 py-2.5 bg-[#6640f4] hover:bg-[#5a38d6] text-white text-[11px] font-bold uppercase tracking-wider rounded-lg shadow-sm transition-all\">\n          <FiEdit className=\"text-sm\" /> Edit Enquiry\n        </button>\n      </div>\n\n      {/* MAIN GRID */}\n      <div className=\"grid grid-cols-1 lg:grid-cols-3 gap-6\">\n\n        {/* LEFT COLUMN */}\n        <div className=\"lg:col-span-2 space-y-6\">\n          \n          {/* ENQUIRY DETAILS */}\n          <div className=\"bg-white rounded-2xl p-6 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-slate-100\">\n            <h3 className=\"text-sm font-bold text-slate-800 flex items-center gap-2 mb-6\">\n              <FiFileText className=\"text-[#6640f4] text-lg\" /> Enquiry Details\n            </h3>\n\n            {/* COURSE PREFERENCES */}\n            <div className=\"space-y-4\">\n              <h4 className=\"text-[10px] font-bold text-slate-400 uppercase tracking-widest\">Course Preferences</h4>\n              <div className=\"grid grid-cols-2 gap-6\">\n                <div>\n                  <span className=\"text-[10px] text-slate-400 font-bold uppercase tracking-wider flex items-center gap-1.5 mb-1.5\">\n                    <FiBookOpen className=\"text-[#6640f4]\" /> Lesson Type / Training\n                  </span>\n                  <span className=\"font-bold text-sm text-slate-800\">{enquiry.LessonType || 'Car Driving Lessons'}</span>\n                </div>\n                <div>\n                  <span className=\"text-[10px] text-slate-400 font-bold uppercase tracking-wider flex items-center gap-1.5 mb-1.5\">\n                    <FiCalendar className=\"text-[#6640f4]\" /> Preferred Start Date / Timeline\n                  </span>\n                  <span className=\"font-bold text-sm text-slate-800\">{enquiry.StartTimeline || '—'}</span>\n                </div>\n                <div>\n                  <span className=\"text-[10px] text-slate-400 font-bold uppercase tracking-wider flex items-center gap-1.5 mb-1.5\">\n                    <FiClock className=\"text-[#6640f4]\" /> Preferred Time Slot\n                  </span>\n                  <span className=\"font-bold text-sm text-slate-800\">{enquiry.PreferredTime || '—'}</span>\n                </div>\n              </div>\n            </div>\n\n            <hr className=\"my-6 border-slate-100\" />\n\n            {/* SCHEDULE & CONTACT */}\n            <div className=\"space-y-4\">\n              <h4 className=\"text-[10px] font-bold text-slate-400 uppercase tracking-widest\">Schedule & Contact</h4>\n              <div className=\"grid grid-cols-2 gap-6\">\n                <div>\n                  <span className=\"text-[10px] text-slate-400 font-bold uppercase tracking-wider flex items-center gap-1.5 mb-1.5\">\n                    <FiMapPin className=\"text-[#6640f4]\" /> Area\n                  </span>\n                  <span className=\"font-bold text-sm text-slate-800\">{enquiry.Area || enquiry.Postcode || '—'}</span>\n                </div>\n                <div>\n                  <span className=\"text-[10px] text-slate-400 font-bold uppercase tracking-wider flex items-center gap-1.5 mb-1.5\">\n                    <FiPhone className=\"text-[#6640f4]\" /> Contact Preference\n                  </span>\n                  <span className=\"font-bold text-sm text-slate-800\">{enquiry.ContactPreference}</span>\n                </div>\n              </div>\n            </div>\n\n            <hr className=\"my-6 border-slate-100\" />\n\n            {/* STUDENT PROFILE & LEAD INFO */}\n            <div className=\"space-y-4\">\n              <h4 className=\"text-[10px] font-bold text-slate-400 uppercase tracking-widest\">Student Profile & Lead Info</h4>\n              <div className=\"grid grid-cols-2 gap-6\">\n                <div>\n                  <span className=\"text-[10px] text-slate-400 font-bold uppercase tracking-wider flex items-center gap-1.5 mb-1.5\">\n                    <FiUser className=\"text-[#6640f4]\" /> Driving Experience\n                  </span>\n                  <span className=\"font-bold text-sm text-slate-800\">{enquiry.DrivingExperience}</span>\n                </div>\n                <div>\n                  <span className=\"text-[10px] text-slate-400 font-bold uppercase tracking-wider flex items-center gap-1.5 mb-1.5\">\n                    <FiCheckCircle className=\"text-[#6640f4]\" /> Has Licence?\n                  </span>\n                  <span className=\"font-bold text-sm text-slate-800\">{enquiry.HasLicence}</span>\n                </div>\n                <div>\n                  <span className=\"text-[10px] text-slate-400 font-bold uppercase tracking-wider flex items-center gap-1.5 mb-1.5\">\n                    <FiTag className=\"text-[#6640f4]\" /> Lead Source\n                  </span>\n                  <span className=\"font-bold text-sm text-slate-800\">{enquiry.Source}</span>\n                </div>\n              </div>\n            </div>\n          </div>\n\n          {/* NOTES & SPECIAL REQUESTS */}\n          <div className=\"bg-white rounded-2xl p-6 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-slate-100\">\n            <h3 className=\"text-sm font-bold text-slate-800 flex items-center gap-2 mb-4\">\n              <FiFlag className=\"text-amber-500 text-lg\" /> Notes & Special Requests\n            </h3>\n            <p className=\"text-xs text-slate-400 italic\">\n              {enquiry.Notes || 'No notes or special requests added yet.'}\n            </p>\n          </div>\n\n          {/* ACTIVITY TIMELINE */}\n          <div className=\"bg-white rounded-2xl p-6 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-slate-100\">\n            <h3 className=\"text-sm font-bold text-slate-800 flex items-center gap-2 mb-4\">\n              <FiActivity className=\"text-teal-500 text-lg\" /> Activity Timeline\n            </h3>\n            <div className=\"py-8 text-center text-xs text-slate-400\">\n              No activity logs found for this enquiry.\n            </div>\n          </div>\n\n        </div>\n\n        {/* RIGHT COLUMN */}\n        <div className=\"space-y-6\">\n\n          {/* UPDATE STATUS */}\n          <div className=\"bg-white rounded-2xl p-6 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-slate-100\">\n            <h3 className=\"text-sm font-bold text-slate-800 flex items-center gap-2 mb-4\">\n              <FiCheckCircle className=\"text-blue-500 text-lg\" /> Update Status\n            </h3>\n            <div className=\"space-y-3\">\n              <label className=\"text-[10px] font-bold text-slate-400 uppercase tracking-widest\">Update Status</label>\n              <select \n                value={status}\n                onChange={(e) => setStatus(e.target.value)}\n                className=\"w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm font-medium text-slate-700 outline-none focus:border-[#6640f4]\"\n              >\n                <option value=\"Confirm\">Confirm</option>\n                <option value=\"Not Confirmed\">Not Confirmed</option>\n              </select>\n              <button className=\"w-full bg-[#11a97d] hover:bg-[#0e8f69] text-white text-[11px] font-bold uppercase tracking-wider py-2.5 rounded-lg transition-all mt-2\">\n                Save Status\n              </button>\n            </div>\n          </div>\n\n          {/* ASSIGN INSTRUCTOR */}\n          <div className=\"bg-white rounded-2xl p-6 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-slate-100\">\n            <h3 className=\"text-sm font-bold text-slate-800 flex items-center gap-2 mb-4\">\n              <FiUser className=\"text-[#6640f4] text-lg\" /> Assign Instructor\n            </h3>\n            <div className=\"space-y-3\">\n              <label className=\"text-[10px] font-bold text-slate-400 uppercase tracking-widest\">Select Instructor</label>\n              <select \n                value={instructor}\n                onChange={(e) => setInstructor(e.target.value)}\n                className=\"w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm font-medium text-slate-700 outline-none focus:border-[#6640f4]\"\n              >\n                <option value=\"Unassigned\">Unassigned</option>\n              </select>\n              <button className=\"w-full bg-[#9f54ff] hover:bg-[#8b45e6] text-white text-[11px] font-bold uppercase tracking-wider py-2.5 rounded-lg transition-all mt-2\">\n                Save Assignment\n              </button>\n            </div>\n          </div>\n\n          {/* STUDENT EMAILS */}\n          <div className=\"bg-white rounded-2xl p-6 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-slate-100\">\n            <h3 className=\"text-sm font-bold text-slate-800 flex items-center gap-2 mb-4\">\n              <FiMail className=\"text-blue-500 text-lg\" /> Student emails\n            </h3>\n            <div className=\"space-y-4\">\n              <div className=\"flex items-center justify-between\">\n                <div className=\"flex items-center gap-2\">\n                  <FiActivity className=\"text-slate-400 text-xs\" />\n                  <span className=\"text-xs font-semibold text-slate-700\">Welcome email</span>\n                  <span className=\"px-1.5 py-0.5 rounded bg-blue-50 text-blue-500 text-[9px] font-bold uppercase tracking-wider\">Sent</span>\n                </div>\n                <button className=\"flex items-center gap-1.5 text-[10px] font-bold text-slate-400 uppercase tracking-wider\">\n                  <FiSend /> Send\n                </button>\n              </div>\n              \n              <div className=\"flex items-center justify-between\">\n                <div className=\"flex items-center gap-2\">\n                  <FiBookOpen className=\"text-slate-400 text-xs\" />\n                  <span className=\"text-xs font-semibold text-slate-700\">Resource pack</span>\n                  <span className=\"px-1.5 py-0.5 rounded bg-blue-50 text-blue-500 text-[9px] font-bold uppercase tracking-wider\">Sent</span>\n                </div>\n                <button className=\"flex items-center gap-1.5 text-[10px] font-bold text-slate-400 uppercase tracking-wider\">\n                  <FiSend /> Send\n                </button>\n              </div>\n\n              <div className=\"flex items-center justify-between\">\n                <div className=\"flex items-center gap-2\">\n                  <FiMessageSquare className=\"text-slate-400 text-xs\" />\n                  <span className=\"text-xs font-semibold text-slate-700\">Review request</span>\n                  <span className=\"px-1.5 py-0.5 rounded bg-slate-100 text-slate-500 text-[9px] font-bold uppercase tracking-wider\">Not sent</span>\n                </div>\n                <button className=\"flex items-center gap-1.5 bg-[#6640f4] text-white px-3 py-1.5 rounded-full text-[9px] font-bold uppercase tracking-wider\">\n                  <FiSend /> Send\n                </button>\n              </div>\n            </div>\n          </div>\n\n          {/* INTERNAL NOTES */}\n          <div className=\"bg-white rounded-2xl p-6 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-slate-100\">\n            <h3 className=\"text-sm font-bold text-slate-800 flex items-center gap-2 mb-4\">\n              <span className=\"w-1 h-4 bg-blue-500 rounded-full\"></span> Internal notes\n            </h3>\n            <div className=\"space-y-3\">\n              <textarea \n                placeholder=\"Add private notes visible only to admins...\"\n                className=\"w-full bg-slate-50 border border-slate-200 rounded-lg p-3 text-xs font-medium text-slate-700 outline-none focus:border-[#6640f4] resize-none h-24\"\n              ></textarea>\n              <button className=\"w-full bg-[#1e293b] hover:bg-slate-800 text-white text-[11px] font-bold py-2.5 rounded-lg transition-all flex items-center justify-center gap-2\">\n                <FiSave /> Save notes\n              </button>\n            </div>\n          </div>\n\n          {/* DANGER ZONE */}\n          <div className=\"bg-white rounded-2xl p-6 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-slate-100\">\n            <h3 className=\"text-sm font-bold text-slate-800 flex items-center gap-2 mb-3\">\n              <FiTrash2 className=\"text-red-500 text-lg\" /> Danger Zone\n            </h3>\n            <p className=\"text-[10px] text-slate-500 mb-4 leading-relaxed\">\n              Once deleted, this enquiry record is permanently removed from the system and cannot be recovered.\n            </p>\n            <button className=\"w-full bg-[#ef4444] hover:bg-red-600 text-white text-[11px] font-bold uppercase tracking-wider py-2.5 rounded-lg transition-all\">\n              Delete Enquiry\n            </button>\n          </div>\n\n        </div>\n      </div>\n    </div>\n  );\n};\n\nexport default EnquiryProfilePage;",
+        "StartLine": 1,
+        "TargetContent": "import React from 'react';\nimport { useParams, Navigate, useLocation } from 'react-router-dom';\nimport { enquiriesData } from '../data/dummy';\nimport { useStateContext } from '../contexts/ContextProvider';\nimport {\n  FiArrowLeft,\n  FiPhone,\n  FiMail,\n  FiCalendar,\n  FiMapPin,\n  FiClock,\n  FiFileText,\n  FiCheckCircle,\n  FiUser,\n  FiCalendar as FiCal,\n  FiMessageSquare,\n  FiTag,\n  FiCompass,\n  FiBox,\n  FiDollarSign,\n  FiBookOpen,\n  FiSettings\n} from 'react-icons/fi';\n\nconst safeString = (val) => {\n  if (val === null || val === undefined) return '';\n  if (typeof val === 'object') {\n    return val.name || val.title || val.full_name || val.first_name || JSON.stringify(val);\n  }\n  return String(val);\n};\n\nconst EnquiryProfilePage = () => {\n  const { id } = useParams();\n  const location = useLocation();\n  const { allenquies } = useStateContext();\n\n  const contextEnq = allenquies?.find((e) => e._id === id || e.id === id || e.EnquiryID === Number(id));\n\n  const rawEnquiry =\n    location.state?.enquiry ||\n    contextEnq ||\n    enquiriesData.find((e) => e.EnquiryID === Number(id));\n\n  if (!rawEnquiry) {\n    return (\n      <div className=\"p-6 max-w-6xl mx-auto space-y-6 flex flex-col items-center justify-center min-h-screen\">\n        <h2 className=\"text-xl font-bold\">Enquiry not found</h2>\n        <p>Could not load data for ID: {id}</p>\n        <button onClick={() => window.history.back()} className=\"px-4 py-2 bg-blue-500 text-white rounded\">Go Back</button>\n      </div>\n    );\n  }\n\n  const getDynamicName = (obj) => {\n    if (!obj) return null;\n    const nameKey = Object.keys(obj).find(key => \n      key.toLowerCase().includes('name') && \n      typeof obj[key] === 'string' && \n      obj[key].trim() !== ''\n    );\n    return nameKey ? obj[nameKey] : null;\n  };\n\n  const enquiry = {\n    FullName: safeString(rawEnquiry.FullName || rawEnquiry.Name || rawEnquiry.name || rawEnquiry.full_name || (rawEnquiry.first_name ? `${rawEnquiry.first_name} ${rawEnquiry.last_name || ''}`.trim() : null) || getDynamicName(rawEnquiry)),\n    EnquiryID: safeString(rawEnquiry.EnquiryID || rawEnquiry.id || rawEnquiry._id),\n    CreatedAt: safeString(rawEnquiry.CreatedAt || (rawEnquiry.createdAt ? new Date(rawEnquiry.createdAt).toLocaleDateString('en-GB') : '')),\n    Phone: safeString(rawEnquiry.Phone || rawEnquiry.phone || rawEnquiry.mobile),\n    Email: safeString(rawEnquiry.Email || rawEnquiry.email),\n    EnquiryStatus: safeString(rawEnquiry.EnquiryStatus || rawEnquiry.status),\n    Area: safeString(rawEnquiry.Area || rawEnquiry.area || rawEnquiry.service_provided_area),\n    Postcode: safeString(rawEnquiry.Postcode || rawEnquiry.postcode),\n    LessonType: safeString(rawEnquiry.LessonType || rawEnquiry.lesson_type || rawEnquiry.type_of_training),\n    Transmission: safeString(rawEnquiry.Transmission || rawEnquiry.transmission || rawEnquiry.preferred_transmission),\n    PreferredTime: safeString(rawEnquiry.PreferredTime || rawEnquiry.preferred_time || rawEnquiry.lesson_preference_time),\n    StartTimeline: safeString(rawEnquiry.StartTimeline || rawEnquiry.start_timeline || (rawEnquiry.preferred_start_date ? new Date(rawEnquiry.preferred_start_date).toLocaleDateString('en-GB') : '')),\n    InterestedPackage: safeString(rawEnquiry.InterestedPackage || rawEnquiry.interested_package || rawEnquiry.package_name || rawEnquiry.package_id?.package_name),\n    EstimatedPrice: safeString(rawEnquiry.EstimatedPrice || (rawEnquiry.estimated_price !== undefined ? `£${rawEnquiry.estimated_price}` : '') || (rawEnquiry.price !== undefined ? `£${rawEnquiry.price}` : '')),\n    Zone: safeString(rawEnquiry.Zone || rawEnquiry.zone),\n    Notes: safeString(rawEnquiry.Notes || rawEnquiry.notes || rawEnquiry.additional_message),\n    Priority: safeString(rawEnquiry.Priority || rawEnquiry.priority),\n    Source: safeString(rawEnquiry.Source || rawEnquiry.source),\n    AssignedTo: safeString(rawEnquiry.AssignedTo || rawEnquiry.assigned_to || rawEnquiry.instructor_id?.name || rawEnquiry.instructor_id),\n    FollowUpDate: safeString(rawEnquiry.FollowUpDate || (rawEnquiry.follow_up_date ? new Date(rawEnquiry.follow_up_date).toLocaleDateString('en-GB') : '')),\n    LastContactedAt: safeString(rawEnquiry.LastContactedAt || (rawEnquiry.last_contacted_at ? new Date(rawEnquiry.last_contacted_at).toLocaleDateString('en-GB') : '')),\n  };\n\n  return (\n    <div className=\"p-4 md:p-8 max-w-6xl mx-auto space-y-8 bg-slate-50/30 dark:bg-transparent min-h-screen transition-colors duration-300\">\n      \n      {/* BACK */}\n      <div>\n        <button\n          type=\"button\"\n          onClick={() => window.history.back()}\n          className=\"group flex items-center gap-2 text-xs font-bold text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white bg-white dark:bg-[#1e293b] px-4 py-2.5 rounded-xl border border-slate-150/40 dark:border-slate-800/40 shadow-sm hover:shadow-md active:scale-95 transition-all select-none\"\n        >\n          <FiArrowLeft className=\"text-sm transition-transform group-hover:-translate-x-0.5\" />\n          Back to Enquiries\n        </button>\n      </div>\n\n      {/* HEADER */}\n      <div className=\"flex flex-col md:flex-row justify-between items-start md:items-center gap-6 p-6 md:p-8 bg-white dark:bg-[#1e293b] rounded-3xl border border-slate-100 dark:border-slate-800/40 shadow-sm transition-all duration-300\">\n        <div className=\"flex items-center gap-5\">\n          <div className=\"w-16 h-16 rounded-2xl bg-gradient-to-tr from-teal-500 to-indigo-650 flex items-center justify-center text-white font-extrabold text-2xl shadow-lg shadow-indigo-500/10\">\n            {enquiry.FullName && enquiry.FullName !== '—'\n              ? enquiry.FullName.charAt(0).toUpperCase()\n              : 'E'}\n          </div>\n          <div className=\"space-y-1\">\n            <div className=\"flex items-center gap-3 flex-wrap\">\n              <h1 className=\"text-2xl font-extrabold text-slate-800 dark:text-slate-100 tracking-tight\">\n                {enquiry.FullName || '—'}\n              </h1>\n              <StatusBadge status={enquiry.EnquiryStatus} />\n            </div>\n            <p className=\"text-slate-400 dark:text-slate-500 text-xs font-semibold\">\n              Enquiry #{enquiry.EnquiryID} · Received {enquiry.CreatedAt}\n            </p>\n            <div className=\"text-slate-500 dark:text-slate-400 text-xs mt-1.5 font-bold flex flex-wrap gap-x-4 gap-y-1\">\n              {enquiry.Phone && enquiry.Phone !== '—' && (\n                <a\n                  href={`tel:${enquiry.Phone}`}\n                  className=\"flex items-center gap-1.5 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors\"\n                >\n                  <FiPhone className=\"text-slate-400\" /> {enquiry.Phone}\n                </a>\n              )}\n              {enquiry.Phone && enquiry.Phone !== '—' && enquiry.Email && enquiry.Email !== '—' && (\n                <span className=\"hidden sm:inline text-slate-300 dark:text-slate-700\">|</span>\n              )}\n              {enquiry.Email && enquiry.Email !== '—' && (\n                <a\n                  href={`mailto:${enquiry.Email}`}\n                  className=\"flex items-center gap-1.5 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors\"\n                >\n                  <FiMail className=\"text-slate-400\" /> {enquiry.Email}\n                </a>\n              )}\n            </div>\n          </div>\n        </div>\n      </div>\n\n      {/* MAIN GRID */}\n      <div className=\"grid grid-cols-1 lg:grid-cols-3 gap-8\">\n\n        {/* LEFT */}\n        <div className=\"lg:col-span-2 space-y-8\">\n          {/* BASIC INFO */}\n          <Card title=\"Enquiry Details\" icon={<FiFileText className=\"text-indigo-500\" />}>\n             <div className=\"grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2\">\n                <DetailRow label=\"Area\" value={enquiry.Area} icon={<FiMapPin />} />\n                <DetailRow label=\"Postcode\" value={enquiry.Postcode} icon={<FiCompass />} />\n                <DetailRow label=\"Lesson Type\" value={enquiry.LessonType} icon={<FiBookOpen />} />\n                <DetailRow label=\"Preferred Transmission\" value={enquiry.Transmission} icon={<FiSettings />} />\n                <DetailRow label=\"Preferred Time\" value={enquiry.PreferredTime} icon={<FiClock />} />\n                <DetailRow label=\"Start Timeline\" value={enquiry.StartTimeline} icon={<FiCalendar />} />\n             </div>\n          </Card>\n\n          {/* PACKAGE */}\n          <Card title=\"Interested Package\" icon={<FiBox className=\"text-fuchsia-500\" />}>\n             <div className=\"grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2\">\n                <DetailRow label=\"Package\" value={enquiry.InterestedPackage} icon={<FiTag />} />\n                <DetailRow label=\"Estimated Price\" value={enquiry.EstimatedPrice} icon={<FiDollarSign />} />\n                <DetailRow label=\"Zone\" value={enquiry.Zone} icon={<FiMapPin />} />\n             </div>\n          </Card>\n\n          {/* NOTES */}\n          <Card title=\"Notes\" icon={<FiMessageSquare className=\"text-blue-500\" />}>\n            <p className=\"text-xs font-semibold text-slate-600 dark:text-slate-400 whitespace-pre-line leading-relaxed\">\n              {enquiry.Notes || 'No notes added yet.'}\n            </p>\n          </Card>\n\n        </div>\n\n        {/* RIGHT */}\n        <div className=\"space-y-8\">\n\n          {/* STATUS */}\n          <Card title=\"Lead Status\" icon={<FiCheckCircle className=\"text-teal-500\" />}>\n             <div className=\"grid grid-cols-1 gap-y-2\">\n                <DetailRow label=\"Priority\" value={enquiry.Priority} />\n                <DetailRow label=\"Source\" value={enquiry.Source} />\n                <DetailRow label=\"Assigned To\" value={enquiry.AssignedTo} icon={<FiUser />} />\n             </div>\n          </Card>\n\n          {/* FOLLOW UP */}\n          <Card title=\"Follow-up\" icon={<FiCal className=\"text-orange-500\" />}>\n             <div className=\"grid grid-cols-1 gap-y-2\">\n                <DetailRow label=\"Follow-up Date\" value={enquiry.FollowUpDate} />\n                <DetailRow label=\"Last Contacted\" value={enquiry.LastContactedAt} />\n             </div>\n          </Card>\n\n          {/* ACTIONS */}\n          <div className=\"premium-card bg-white dark:bg-[#1e293b] rounded-3xl p-6 border border-slate-100 dark:border-slate-800/40 shadow-sm space-y-4\">\n            <h3 className=\"text-sm font-extrabold text-slate-800 dark:text-slate-200 flex items-center gap-2 pb-2 border-b border-slate-100 dark:border-slate-800/40 w-full\">\n              <span className=\"w-1.5 h-4 bg-teal-500 rounded-full\" />\n              Quick Actions\n            </h3>\n\n            <div className=\"space-y-3 pt-1\">\n              <button type='button' className=\"w-full bg-gradient-to-r from-teal-500 to-emerald-600 hover:from-teal-600 hover:to-emerald-700 text-white font-bold text-[11px] uppercase tracking-wider py-3.5 rounded-xl shadow-lg shadow-teal-500/10 active:scale-[0.98] transition-all flex items-center justify-center gap-2\">\n                Convert to Learner\n              </button>\n\n              <button type='button' className=\"w-full bg-gradient-to-r from-indigo-500 to-blue-600 hover:from-indigo-600 hover:to-blue-700 text-white font-bold text-[11px] uppercase tracking-wider py-3.5 rounded-xl shadow-lg shadow-indigo-500/10 active:scale-[0.98] transition-all flex items-center justify-center gap-2\">\n                Schedule Trial Lesson\n              </button>\n\n              <button type='button' className=\"w-full bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 font-bold text-[11px] uppercase tracking-wider py-3.5 rounded-xl transition-all active:scale-[0.98]\">\n                Add Follow-up Note\n              </button>\n            </div>\n          </div>\n\n        </div>\n      </div>\n    </div>\n  );\n};\n\nexport default EnquiryProfilePage;\n\n/* ================= SMALL COMPONENTS ================= */\n\nconst Card = ({ title, icon, children }) => (\n  <div className=\"premium-card bg-white dark:bg-[#1e293b] rounded-3xl p-6 border border-slate-100 dark:border-slate-800/40 shadow-sm space-y-4 transition-all duration-300\">\n    <h3 className=\"text-sm font-extrabold text-slate-800 dark:text-slate-200 flex items-center gap-2 pb-2 border-b border-slate-100 dark:border-slate-800/40 w-full\">\n      <span className=\"w-1.5 h-4 bg-indigo-500 rounded-full\" />\n      {icon && <span className=\"text-sm\">{icon}</span>}\n      {title}\n    </h3>\n    <div className=\"space-y-3\">{children}</div>\n  </div>\n);\n\nconst DetailRow = ({ label, value, icon }) => (\n  <div className=\"flex flex-col gap-1.5 py-3 border-b border-slate-100/50 dark:border-slate-800/40 last:border-b-0 last:pb-0\">\n    <span className=\"text-[10px] text-slate-400 dark:text-slate-400 font-bold uppercase tracking-wider flex items-center gap-1.5\">\n      {icon && <span className=\"text-indigo-500 text-[12px]\">{icon}</span>}\n      {label}\n    </span>\n    <span className=\"font-extrabold text-sm text-slate-800 dark:text-slate-100 truncate pl-1\">\n      {value || '—'}\n    </span>\n  </div>\n);\n\nconst StatusBadge = ({ status }) => {\n  const styles = {\n    new: 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/25',\n    contacted: 'bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border-indigo-500/25',\n    booked: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/25',\n    'waiting list': 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/25',\n    'no response': 'bg-slate-500/10 text-slate-600 dark:text-slate-400 border-slate-500/25',\n    'test-only enquiry': 'bg-fuchsia-500/10 text-fuchsia-600 dark:text-fuchsia-400 border-fuchsia-500/25',\n    'passed to office': 'bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/25',\n    'quoted / price given': 'bg-teal-500/10 text-teal-600 dark:text-teal-400 border-teal-500/25',\n    'call back later': 'bg-orange-500/10 text-orange-600 dark:text-orange-400 border-orange-500/25',\n    lost: 'bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/25',\n  };\n\n  const key = String(status || 'new').toLowerCase().trim();\n\n  return (\n    <span\n      className={`px-3 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider border select-none ${styles[key] || styles.new}`}\n    >\n      {status || 'New'}\n    </span>\n  );\n};",
+        "TargetFile": "d:\\sanjit\\drivepasslatestdashboard20june\\src\\pages\\EnquiryProfilePage.jsx",
+        "toolAction": "Applying EXACT design from screenshot to EnquiryProfilePage.jsx",
+        "toolSummary": "Apply exact screenshot design"
+      }
+    }
+  },
+  {
+    "step": 154,
+    "tc": {
+      "name": "run_command",
+      "args": {
+        "CommandLine": "npx eslint src/pages/EnquiryProfilePage.jsx",
+        "Cwd": "d:\\sanjit\\drivepasslatestdashboard20june",
+        "WaitMsBeforeAsync": 5000,
+        "toolAction": "Running eslint to verify syntax of the new exact design",
+        "toolSummary": "Check ESLint again"
+      }
+    }
+  },
+  {
+    "step": 161,
+    "tc": {
+      "name": "run_command",
+      "args": {
+        "CommandLine": "npx eslint --fix src/pages/EnquiryProfilePage.jsx",
+        "Cwd": "d:\\sanjit\\drivepasslatestdashboard20june",
+        "WaitMsBeforeAsync": 5000,
+        "toolAction": "Fixing any missing imports or errors in EnquiryProfilePage.jsx",
+        "toolSummary": "Fix ESLint in EnquiryProfilePage"
+      }
+    }
+  },
+  {
+    "step": 165,
+    "tc": {
+      "name": "replace_file_content",
+      "args": {
+        "AllowMultiple": false,
+        "Description": "Added missing FiTag import for the EnquiryProfilePage.",
+        "EndLine": 21,
+        "Instruction": "Add FiTag to the react-icons/fi import list",
+        "ReplacementContent": "import {\n  FiArrowLeft,\n  FiPhone,\n  FiMail,\n  FiEdit,\n  FiFileText,\n  FiBookOpen,\n  FiCalendar,\n  FiClock,\n  FiMapPin,\n  FiMessageSquare,\n  FiActivity,\n  FiCheckCircle,\n  FiUser,\n  FiSend,\n  FiSave,\n  FiTrash2,\n  FiFlag,\n  FiTag\n} from 'react-icons/fi';",
+        "StartLine": 5,
+        "TargetContent": "import {\n  FiArrowLeft,\n  FiPhone,\n  FiMail,\n  FiEdit,\n  FiFileText,\n  FiBookOpen,\n  FiCalendar,\n  FiClock,\n  FiMapPin,\n  FiMessageSquare,\n  FiActivity,\n  FiCheckCircle,\n  FiUser,\n  FiSend,\n  FiSave,\n  FiTrash2,\n  FiFlag\n} from 'react-icons/fi';",
+        "TargetFile": "d:\\sanjit\\drivepasslatestdashboard20june\\src\\pages\\EnquiryProfilePage.jsx",
+        "toolAction": "Fixing missing FiTag import in EnquiryProfilePage",
+        "toolSummary": "Add FiTag import"
+      }
+    }
+  },
+  {
+    "step": 172,
+    "tc": {
+      "name": "run_command",
+      "args": {
+        "CommandLine": "git log -p -n 5 src/pages/EnquiryProfilePage.jsx",
+        "Cwd": "d:\\sanjit\\drivepasslatestdashboard20june",
+        "WaitMsBeforeAsync": 5000,
+        "toolAction": "Checking git log for EnquiryProfilePage.jsx",
+        "toolSummary": "Check git log"
+      }
+    }
+  },
+  {
+    "step": 175,
+    "tc": {
+      "name": "run_command",
+      "args": {
+        "CommandLine": "powershell -Command \"Select-String -Path 'C:\\Users\\PC\\.gemini\\antigravity\\brain\\4bc671fc-abe2-40e2-bccd-1f124f8a2f79\\.system_generated\\logs\\transcript_full.jsonl' -Pattern 'EnquiryProfilePage\\.jsx'\"",
+        "Cwd": "d:\\sanjit\\drivepasslatestdashboard20june",
+        "WaitMsBeforeAsync": 5000,
+        "toolAction": "Searching transcript for original EnquiryProfilePage.jsx",
+        "toolSummary": "Search transcript for original file"
+      }
+    }
+  },
+  {
+    "step": 178,
+    "tc": {
+      "name": "run_command",
+      "args": {
+        "CommandLine": "node -e \"const fs = require('fs'); const lines = fs.readFileSync('C:/Users/PC/.gemini/antigravity/brain/4bc671fc-abe2-40e2-bccd-1f124f8a2f79/.system_generated/logs/transcript_full.jsonl', 'utf-8').split('\\n'); const step79 = lines.findIndex(l => l.includes('\\\"step_index\\\":79')); const response = lines.slice(step79, step79+5).find(l => l.includes('\\\"type\\\":\\\"TOOL_RESPONSE\\\"') && l.includes('EnquiryProfilePage.jsx')); if(response) { const obj = JSON.parse(response); console.log(obj.content.substring(0, 500)); fs.writeFileSync('original_enquiry.txt', obj.content); } else { console.log('Not found'); }\"",
+        "Cwd": "d:\\sanjit\\drivepasslatestdashboard20june",
+        "WaitMsBeforeAsync": 5000,
+        "toolAction": "Extracting the original EnquiryProfilePage.jsx from the transcript",
+        "toolSummary": "Extract original file"
+      }
+    }
+  },
+  {
+    "step": 182,
+    "tc": {
+      "name": "view_file",
+      "args": {
+        "AbsolutePath": "d:\\sanjit\\drivepasslatestdashboard20june\\original_enquiry.txt",
+        "toolAction": "Viewing the extracted original EnquiryProfilePage.jsx from transcript",
+        "toolSummary": "View original file"
+      }
+    }
+  },
+  {
+    "step": 184,
+    "tc": {
+      "name": "run_command",
+      "args": {
+        "CommandLine": "node -e \"const fs = require('fs'); const lines = fs.readFileSync('C:/Users/PC/.gemini/antigravity/brain/4bc671fc-abe2-40e2-bccd-1f124f8a2f79/.system_generated/logs/transcript_full.jsonl', 'utf-8').split('\\n'); let versions = []; for (let line of lines) { if (line.includes('EnquiryProfilePage.jsx')) { versions.push(line); } } fs.writeFileSync('versions.txt', versions.join('\\n'));\"",
+        "Cwd": "d:\\sanjit\\drivepasslatestdashboard20june",
+        "WaitMsBeforeAsync": 5000,
+        "toolAction": "Extracting all mentions of EnquiryProfilePage.jsx from transcript",
+        "toolSummary": "Extract from transcript"
+      }
+    }
+  },
+  {
+    "step": 196,
+    "tc": {
+      "name": "run_command",
+      "args": {
+        "CommandLine": "echo const fs = require('fs'); const lines = fs.readFileSync('versions.txt', 'utf-8').split('\\n'); for(let l of lines) { if (l.includes('TOOL_RESPONSE') && l.includes('EnquiryProfilePage.jsx') && l.includes('Total Lines')) { fs.writeFileSync('extracted.json', l); break; } } > extract.js && node extract.js",
+        "Cwd": "d:\\sanjit\\drivepasslatestdashboard20june",
+        "WaitMsBeforeAsync": 5000,
+        "toolAction": "Extracting the original file content using a JS script",
+        "toolSummary": "Extract to JSON"
+      }
+    }
+  },
+  {
+    "step": 199,
+    "tc": {
+      "name": "write_to_file",
+      "args": {
+        "CodeContent": "const fs = require('fs');\nconst lines = fs.readFileSync('C:/Users/PC/.gemini/antigravity/brain/4bc671fc-abe2-40e2-bccd-1f124f8a2f79/.system_generated/logs/transcript_full.jsonl', 'utf-8').split('\\n');\nfor(let l of lines) {\n  if (l.includes('TOOL_RESPONSE') && l.includes('EnquiryProfilePage.jsx') && l.includes('Total Lines')) {\n    const obj = JSON.parse(l);\n    fs.writeFileSync('original_enquiry.jsx', obj.content);\n    console.log('Done');\n    break;\n  }\n}\n",
+        "Description": "Script to extract original file content from transcript",
+        "Overwrite": true,
+        "TargetFile": "d:\\sanjit\\drivepasslatestdashboard20june\\extract.js",
+        "toolAction": "Writing extraction script to extract.js",
+        "toolSummary": "Write extraction script"
+      }
+    }
+  },
+  {
+    "step": 205,
+    "tc": {
+      "name": "replace_file_content",
+      "args": {
+        "AllowMultiple": false,
+        "Description": "Fixed extraction script.",
+        "EndLine": 9,
+        "Instruction": "Fix the extraction script to just dump the raw line to a file so I can parse it or view it.",
+        "ReplacementContent": "const fs = require('fs');\nconst lines = fs.readFileSync('C:/Users/PC/.gemini/antigravity/brain/4bc671fc-abe2-40e2-bccd-1f124f8a2f79/.system_generated/logs/transcript_full.jsonl', 'utf-8').split('\\n');\nfor(let l of lines) {\n  if (l.includes('TOOL_RESPONSE') && l.includes('EnquiryProfilePage.jsx') && l.includes('Total Lines')) {\n    fs.writeFileSync('original_enquiry.json', l);\n    console.log('Done');\n    break;\n  }\n}",
+        "StartLine": 1,
+        "TargetContent": "const fs = require('fs');\nconst lines = fs.readFileSync('C:/Users/PC/.gemini/antigravity/brain/4bc671fc-abe2-40e2-bccd-1f124f8a2f79/.system_generated/logs/transcript_full.jsonl', 'utf-8').split('\\n');\nfor(let l of lines) {\n  if (l.includes('TOOL_RESPONSE') && l.includes('EnquiryProfilePage.jsx') && l.includes('Total Lines')) {\n    const obj = JSON.parse(l);\n    fs.writeFileSync('original_enquiry.jsx', obj.content);\n    console.log('Done');\n    break;\n  }\n}",
+        "TargetFile": "d:\\sanjit\\drivepasslatestdashboard20june\\extract.js",
+        "toolAction": "Fixing extraction script",
+        "toolSummary": "Fix script"
+      }
+    }
+  },
+  {
+    "step": 220,
+    "tc": {
+      "name": "run_command",
+      "args": {
+        "CommandLine": "powershell -Command \"Select-String -Path 'C:\\Users\\PC\\.gemini\\antigravity\\brain\\4bc671fc-abe2-40e2-bccd-1f124f8a2f79\\.system_generated\\logs\\transcript_full.jsonl' -Pattern 'file:///d:/sanjit/drivepasslatestdashboard20june/src/pages/EnquiryProfilePage.jsx' | Select-Object -First 1 | ForEach-Object { $_.Line } > original.txt\"",
+        "Cwd": "d:\\sanjit\\drivepasslatestdashboard20june",
+        "WaitMsBeforeAsync": 5000,
+        "toolAction": "Extracting the actual tool response for the view_file of EnquiryProfilePage.jsx",
+        "toolSummary": "Extract view_file response"
+      }
+    }
+  },
+  {
+    "step": 223,
+    "tc": {
+      "name": "write_to_file",
+      "args": {
+        "CodeContent": "const fs = require('fs');\nconst transcriptPath = 'C:/Users/PC/.gemini/antigravity/brain/4bc671fc-abe2-40e2-bccd-1f124f8a2f79/.system_generated/logs/transcript_full.jsonl';\nconst lines = fs.readFileSync(transcriptPath, 'utf-8').split('\\n');\nfor (let line of lines) {\n  if (line.includes('file:///d:/sanjit/drivepasslatestdashboard20june/src/pages/EnquiryProfilePage.jsx') && line.includes('Total Lines:')) {\n    const obj = JSON.parse(line);\n    const output = obj.content || obj.tool_responses[0]?.response?.output;\n    fs.writeFileSync('original_content.txt', output);\n    console.log('Saved to original_content.txt');\n    break;\n  }\n}",
+        "Description": "Node script to extract the original file content",
+        "Overwrite": true,
+        "TargetFile": "d:\\sanjit\\drivepasslatestdashboard20june\\extract2.js",
+        "toolAction": "Writing extraction script to extract2.js",
+        "toolSummary": "Write extract2.js"
+      }
+    }
+  },
+  {
+    "step": 229,
+    "tc": {
+      "name": "view_file",
+      "args": {
+        "AbsolutePath": "d:\\sanjit\\drivepasslatestdashboard20june\\original_content.txt",
+        "toolAction": "Viewing the extracted original content of EnquiryProfilePage.jsx",
+        "toolSummary": "View original_content.txt"
+      }
+    }
+  },
+  {
+    "step": 244,
+    "tc": {
+      "name": "write_to_file",
+      "args": {
+        "CodeContent": "const fs = require('fs');\nconst transcriptPath = 'C:/Users/PC/.gemini/antigravity/brain/4bc671fc-abe2-40e2-bccd-1f124f8a2f79/.system_generated/logs/transcript_full.jsonl';\nconst lines = fs.readFileSync(transcriptPath, 'utf-8').split('\\n');\nlet count = 0;\nfor (let line of lines) {\n  if (line.includes('EnquiryProfilePage.jsx') && line.includes('TOOL_RESPONSE') && line.includes('Total Lines:')) {\n    const obj = JSON.parse(line);\n    const output = obj.content || obj.tool_responses[0]?.response?.output;\n    fs.writeFileSync(`enquiry_version_${count}.jsx`, output);\n    count++;\n  }\n}\nconsole.log(`Saved ${count} versions.`);",
+        "Description": "Node script to extract all versions of EnquiryProfilePage.jsx from transcript",
+        "Overwrite": true,
+        "TargetFile": "d:\\sanjit\\drivepasslatestdashboard20june\\extract3.js",
+        "toolAction": "Writing extraction script to extract3.js",
+        "toolSummary": "Write extract3.js"
+      }
+    }
+  },
+  {
+    "step": 253,
+    "tc": {
+      "name": "run_command",
+      "args": {
+        "CommandLine": "node -e \"const fs = require('fs'); fs.copyFileSync('original_content.txt', 'src/pages/EnquiryProfilePage.jsx');\"",
+        "Cwd": "d:\\sanjit\\drivepasslatestdashboard20june",
+        "WaitMsBeforeAsync": 5000,
+        "toolAction": "Restoring EnquiryProfilePage.jsx from original_content.txt",
+        "toolSummary": "Restore original file"
+      }
+    }
+  },
+  {
+    "step": 256,
+    "tc": {
+      "name": "run_command",
+      "args": {
+        "CommandLine": "npx eslint src/pages/EnquiryProfilePage.jsx",
+        "Cwd": "d:\\sanjit\\drivepasslatestdashboard20june",
+        "WaitMsBeforeAsync": 5000,
+        "toolAction": "Verifying syntax of restored EnquiryProfilePage.jsx",
+        "toolSummary": "Run ESLint on restored file"
+      }
+    }
+  },
+  {
+    "step": 259,
+    "tc": {
+      "name": "manage_task",
+      "args": {
+        "Action": "status",
+        "TaskId": "4bc671fc-abe2-40e2-bccd-1f124f8a2f79/task-257",
+        "toolAction": "Checking status of ESLint on restored EnquiryProfilePage.jsx",
+        "toolSummary": "Check ESLint status"
+      }
+    }
+  },
+  {
+    "step": 262,
+    "tc": {
+      "name": "run_command",
+      "args": {
+        "CommandLine": "npx eslint src/pages/EnquiryProfilePage.jsx",
+        "Cwd": "d:\\sanjit\\drivepasslatestdashboard20june",
+        "WaitMsBeforeAsync": 5000,
+        "toolAction": "Waiting to ensure ESLint passes",
+        "toolSummary": "Check ESLint again"
+      }
+    }
+  },
+  {
+    "step": 266,
+    "tc": {
+      "name": "view_file",
+      "args": {
+        "AbsolutePath": "d:\\sanjit\\drivepasslatestdashboard20june\\src\\pages\\EnquiryProfilePage.jsx",
+        "EndLine": 15,
+        "StartLine": 1,
+        "toolAction": "Viewing EnquiryProfilePage.jsx to see if line numbers were included",
+        "toolSummary": "View EnquiryProfilePage.jsx"
+      }
+    }
+  },
+  {
+    "step": 269,
+    "tc": {
+      "name": "write_to_file",
+      "args": {
+        "CodeContent": "const fs = require('fs');\nconst lines = fs.readFileSync('src/pages/EnquiryProfilePage.jsx', 'utf-8').split('\\n');\nlet code = [];\nlet started = false;\nfor (let line of lines) {\n  if (line.match(/^\\d+:\\simport React/)) {\n    started = true;\n  }\n  if (started) {\n    if (line.match(/^The above content/)) break;\n    // Remove the line number prefix like \"1: \"\n    const match = line.match(/^\\d+:\\s(.*)/);\n    if (match) {\n      code.push(match[1]);\n    } else if (line.match(/^\\d+:$/)) {\n      code.push('');\n    }\n  }\n}\nfs.writeFileSync('src/pages/EnquiryProfilePage.jsx', code.join('\\n'));",
+        "Description": "Node script to clean up the file by removing line numbers and tool metadata",
+        "Overwrite": true,
+        "TargetFile": "d:\\sanjit\\drivepasslatestdashboard20june\\clean.js",
+        "toolAction": "Writing clean.js to clean up EnquiryProfilePage.jsx",
+        "toolSummary": "Write clean.js"
+      }
+    }
+  },
+  {
+    "step": 276,
+    "tc": {
+      "name": "run_command",
+      "args": {
+        "CommandLine": "npx eslint src/pages/EnquiryProfilePage.jsx",
+        "Cwd": "d:\\sanjit\\drivepasslatestdashboard20june",
+        "WaitMsBeforeAsync": 5000,
+        "toolAction": "Verifying ESLint on the cleaned file",
+        "toolSummary": "Run ESLint on cleaned file"
+      }
+    }
+  },
+  {
+    "step": 282,
+    "tc": {
+      "name": "run_command",
+      "args": {
+        "CommandLine": "npx eslint src/pages/EnquiryProfilePage.jsx",
+        "Cwd": "d:\\sanjit\\drivepasslatestdashboard20june",
+        "WaitMsBeforeAsync": 5000,
+        "toolAction": "Waiting for ESLint to finish",
+        "toolSummary": "Check ESLint"
+      }
+    }
+  },
+  {
+    "step": 295,
+    "tc": {
+      "name": "write_to_file",
+      "args": {
+        "CodeContent": "const fs = require('fs');\nconst transcriptPath = 'C:/Users/PC/.gemini/antigravity/brain/4bc671fc-abe2-40e2-bccd-1f124f8a2f79/.system_generated/logs/transcript_full.jsonl';\nconst lines = fs.readFileSync(transcriptPath, 'utf-8').split('\\n');\nlet calls = [];\nfor (let line of lines) {\n  if (line.includes('EnquiryProfilePage.jsx') && line.includes('\"type\":\"PLANNER_RESPONSE\"')) {\n    const obj = JSON.parse(line);\n    if (obj.tool_calls) {\n      for (let tc of obj.tool_calls) {\n        if (JSON.stringify(tc.args).includes('EnquiryProfilePage.jsx')) {\n          calls.push({step: obj.step_index, tc: tc});\n        }\n      }\n    }\n  }\n}\nfs.writeFileSync('tool_calls_on_enquiry.json', JSON.stringify(calls, null, 2));",
+        "Description": "Node script to extract all tool calls affecting EnquiryProfilePage",
+        "Overwrite": true,
+        "TargetFile": "d:\\sanjit\\drivepasslatestdashboard20june\\extract_calls.js",
+        "toolAction": "Writing extraction script to extract_calls.js",
+        "toolSummary": "Write extract_calls.js"
+      }
+    }
+  }
+]
